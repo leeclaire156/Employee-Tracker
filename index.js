@@ -2,15 +2,15 @@
 // Packages needed for this application, inquirer will be used to ask questions, mysql2 will be required to access the database
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
-
+const { nameValidation, numberValidation } = require('./utils/validation');
 
 //These questions wil be invoked with `node index.js`
 const mainMenu = {
-    type: "choice",
+    type: "list",
     message: "What would you like to do?",
     choices: [
         "View All Employees", //Table with employees' id, first_name, last_name, job title (role), department,salary, and manager name should appear
-        "Add Employee", // Follow with "What is the employee's first name?", "What is the employee's last name?", "What is the employee's role?" (Choice; department and salary information for table should come from matching with role table), "Who is the employee's manager?" (Choice)
+        "Add Employee", // Follow with "What is the employee's first name?", "What is the employee's last name?", "What is the employee's role?" (list; department and salary information for table should come from matching with role table), "Who is the employee's manager?" (Choice)
         "Update Employee Role", // Follow with "Which employee's role do you want to update?" (Choice) and "Which role do you want to assign the selected employee?" (Choice) + confirmation message that says "Updated employee's role", maybe console info?
         "View All Roles", // Table with roles' id, title, department, and salary should appear
         "Add Role", // Follow with "What is the name of the role?", "What is the salary of the role?", and "Which department does the role belong to? (Choice)"
@@ -30,58 +30,62 @@ const addEmployee = [
     {
         type: "input",
         message: "What is the employee's first name?",
-        name: "firstName"
+        name: "firstName",
+        validate: nameValidation,
     },
     {
         type: "input",
         message: "What is the employee's last name?",
-        name: "lastName"
+        name: "lastName",
+        validate: nameValidation,
     },
     {
-        type: "choice",
+        type: "list",
         message: "What is the employee's role?", //refer to rolesArray
         choices: [],
-        name: "role"
+        name: "role",
     },
     {
-        type: "choice",
+        type: "list",
         message: "Who is the employee's manager?", //refer to managersArray
         choices: [],
-        name: "manager"
-    }
+        name: "manager",
+    },
 ]
 
 const updateRole = [
     {
-        type: "choice",
+        type: "list",
         message: "Which employee's role do you want to update?", //refer to employeesArray
         choices: [],
-        name: "employeeUpdate"
+        name: "employeeUpdate",
     },
     {
-        type: "choice",
+        type: "list",
         message: "Which role do you want to assign the selected employee?", //refer to rolesArray
         choices: [],
-        name: "employeeUpdateRole"
-    }
+        name: "employeeUpdateRole",
+    },
 ]
 
 const addRole = [
     {
         type: "input",
         message: "What is the name of the role?",
-        name: "newRole"
+        name: "newRole",
+        validate: nameValidation,
     },
     {
         type: "input",
         message: "What is the salary of the role?",
-        name: "roleSalary"
+        name: "roleSalary",
+        validate: numberValidation,
     },
     {
-        type: "choice",
+        type: "list",
         message: "Which department does the role belong to?", //refer to departmentsArray
         choices: [],
-        name: "roleDepartment"
+        name: "roleDepartment",
     },
 ]
 
@@ -89,14 +93,19 @@ const addDepartment = [
     {
         type: "input",
         message: "What is the name of the department?",
-        name: "departmentName"
+        name: "departmentName",
+        validate: nameValidation,
     },
 ]
+
 
 function init() {
     inquirer.prompt(mainMenu)
         .then((data) => {
             //TODO: add functions based on input
+            if ("Add Role") {
+                inquirer.prompt(addRole)
+            }
         })
         .then(mainMenu)
 }
