@@ -101,9 +101,9 @@ Method 2:
 
 ## Credits
 
-* []():<br></br> link
+* Code for inquirer validation as a separate function credit goes to [udalmik](https://stackoverflow.com/users/1584167/udalmik):<br></br> https://stackoverflow.com/questions/57321266/how-to-test-inquirer-validation
 
-* []():<br></br> link
+* `string.length()` method supplemental lesson by [W3 Schools](https://www.w3schools.com/default.asp):<br></br> https://www.w3schools.com/jsref/jsref_length_string.asp
 
 * []():<br></br> link
 
