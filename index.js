@@ -2,7 +2,7 @@
 // Packages needed for this application, inquirer will be used to ask questions, mysql2 will be required to access the database
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
-const { nameValidation, numberValidation } = require('./utils/validation');
+const { nameValidation, salaryValidation } = require('./utils/validation');
 
 //These questions wil be invoked with `node index.js`
 const mainMenu = {
@@ -79,7 +79,7 @@ const addRole = [
         type: "input",
         message: "What is the salary of the role?",
         name: "roleSalary",
-        validate: numberValidation,
+        validate: salaryValidation,
     },
     {
         type: "list",

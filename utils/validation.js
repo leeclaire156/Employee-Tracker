@@ -21,15 +21,16 @@ const nameValidation = async (answer) => {
     }
 }
 
-const numberValidation = async (answer) => {
-    var hasNonDigit = /\D/;
-    if (hasNonDigit.test(answer)) {
-        return "Please change the salary to numbers only"
+const salaryValidation = async (answer) => {
+    var hasDigit = /\d/;
+    var hasPeriod = /\./;
+    if (hasDigit.test(answer) && hasPeriod.test(answer)) {
+        return true
     } else if (!answer) {
         return "Please enter the role's salary"
     } else {
-        return true
+        return "Please change the salary to numbers only and don't forget the cents."
     }
 }
 
-module.exports = { nameValidation, numberValidation };
+module.exports = { nameValidation, salaryValidation };
