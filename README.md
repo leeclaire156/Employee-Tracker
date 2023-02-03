@@ -13,9 +13,11 @@ This project utilizes [Node.js version 16.18.0](https://nodejs.org/en/) and the 
 - [Installation](#installation)
     - [Git/Git Bash](#gitgit-bash---strongly-recommended)
     - [Visual Studio Code](#visual-studio-code-vsc---strongly-recommended)
-    - [Node](#node-version-16---required-to-download-node-dependencies-ie-inquirer-and-my-sql-2)
+    - [Node](#node-version-16---required-to-download-node-based-dependencies-ie-inquirer-my-sql-2-express-and-consoletable)
     - [Inquirer](#inquirer-version-824---required-to-prompt-questions)
-    - [Node My SQL 2](#node-my-sql-2-version-310---required-for-testing)
+    - [Node My SQL 2](#node-my-sql-2-version-310---required-for-accessing-database)
+    - [express](#express-version-4182---required-for-connecting-and-creating-routes-to-database)
+    - [console.table](#consoletable-version-0100---required-for-printing-mysql-rows-into-console-log)
 - [Usage](#usage---for-the-purposes-of-this-demonstration-git-bash-will-be-used-as-my-preferred-terminal)
 - [Credits](#credits)
 - [Questions](#questions)
@@ -32,7 +34,7 @@ Make sure the following are downloaded:
 
 * If you'd like to make changes to this code or the README file generated, Visual Studio Code is recommended and can be downloaded for free [here](https://code.visualstudio.com/download).
 
-### `Node version 16` - **REQUIRED** to download node dependencies (i.e. Inquirer and My SQL 2)
+### `Node version 16` - **REQUIRED** to download node-based dependencies (i.e. Inquirer, My SQL 2, express, and console.table)
 * Go to [Node's homepage, https://nodejs.org/en/](https://nodejs.org/en/), then [Downloads](https://nodejs.org/en/download/) and scroll down to the [Previous Releases](https://nodejs.org/en/download/releases/) bullet point. 
 
 * Toggle between the results until the desired version 16 package and click Download. This application was developed with [Node.js version 16.18.0](https://nodejs.org/dist/v16.18.0/), click on [node-v16.18.0-x64.msi](https://nodejs.org/download/release/v16.18.0/node-v16.18.0-x64.msi) to download.
@@ -70,11 +72,19 @@ Make sure the following are downloaded:
 
 * Once this repository has been reached, type in `npm i inquirer@8.2.4` into the terminal and hit `Enter`.
 
-### `Node My SQL 2 version 3.1.0` - **REQUIRED** for testing
+### `Node My SQL 2 version 3.1.0` - **REQUIRED** for accessing database
 
 * Follow the same methods from [Inquirer v8.2.4 Installation Section](#inquirer-version-824---required-to-prompt-questions) to reach this repository if you've already exited out of the command-line, then type in `npm i mysql2` and hit `Enter`.
 
-![User installs Node My SQL 2 using command line](./assets/screenshots/npm-i-mysql2.PNG)
+### `express version 4.18.2` - **REQUIRED** for connecting and creating routes to database
+
+* Follow the same methods from [Inquirer v8.2.4 Installation Section](#inquirer-version-824---required-to-prompt-questions) to reach this repository if you've already exited out of the command-line, then type in `npm i express` and hit `Enter`.
+
+### `console.table version 0.10.0` - **REQUIRED** for printing MySQL rows into console log
+
+* Follow the same methods from [Inquirer v8.2.4 Installation Section](#inquirer-version-824---required-to-prompt-questions) to reach this repository if you've already exited out of the command-line, then type in `npm i console.table` and hit `Enter`.
+
+![User installs inquirer, MySQL 2, express, and console.table using command line](./assets/screenshots/npm-i-consoletable.PNG)
 
 
 ## Usage - for the purposes of this demonstration, Git Bash will be used as my preferred terminal
