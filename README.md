@@ -102,7 +102,7 @@ Method 2:
 
 ![User uses Change Directory (cd) to access repository through external terminal](./assets/screenshots/External-Terminal-Method-2.PNG)
 
-* Once this repository has been reached, type in `node index.js` into the terminal and hit `Enter`. This will start the questions prompt. Answer the questions as according to the project in question.
+* Once this repository has been reached, type in `node server.js` into the terminal and hit `Enter`. This will start the questions prompt. Answer the questions as according to the project in question.
 ![Initializing the app with 'node index.js' in the external terminal](./assets/screenshots/External-Terminal-Initializing.PNG)
 
 * The first question will ...
@@ -121,7 +121,7 @@ Method 2:
 
 * Information for MySQL2 dependency provided by [Node Package Manager](https://www.npmjs.com/):<br></br> https://www.npmjs.com/package/mysql2
 
-* []():<br></br> link
+* Credit for querying function in server.js, responsible for invoking and connecting inquirer to SQL via query, belongs to "Adding to a table with Inquirer results" (3:51 minutes in) by [Lindsay Chapin](https://www.youtube.com/@lindsaychapin7392):<br></br> https://www.youtube.com/watch?v=gZugKSoAyoY&t=624s
 
 * []():<br></br> link
 

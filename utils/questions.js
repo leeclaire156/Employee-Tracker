@@ -1,10 +1,5 @@
-//TODO: Create questions for inquirer and functions to invoke
-// Packages needed for this application, inquirer will be used to ask questions, mysql2 will be required to access the database
-const inquirer = require('inquirer');
-const mysql = require('mysql2');
-const { nameValidation, salaryValidation } = require('./utils/validation');
+const { nameValidation, salaryValidation } = require('./validation');
 
-//These questions wil be invoked with `node index.js`
 const mainMenu = {
     type: "list",
     message: "What would you like to do?",
@@ -105,16 +100,4 @@ const addDepartment = [
     },
 ]
 
-
-function init() {
-    inquirer.prompt(mainMenu)
-        .then((data) => {
-            //TODO: add functions based on input
-            if ("Add Role") {
-                inquirer.prompt(addRole)
-            }
-        })
-        .then(mainMenu)
-}
-
-init();
+module.exports = { mainMenu, addEmployee, updateRole, addRole, addDepartment };
