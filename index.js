@@ -16,6 +16,13 @@ const mainMenu = {
         "Add Role", // Follow with "What is the name of the role?", "What is the salary of the role?", and "Which department does the role belong to? (Choice)"
         "View All Departments", // Table with departments' ids and names should appear
         "Add Department", // "What is the name of the department?" + confirmation message that says "Added ${department name} to the database", maybe console info?
+        /*"Update employee managers",
+        "View employees by manager",
+        "View employees by department",
+        "Delete departments",
+        "Delete roles",
+        "Delete employees",
+        "View total utilized budget for a department",*/
         "Quit"
     ],
     name: "toDo",
@@ -47,7 +54,7 @@ const addEmployee = [
     },
     {
         type: "list",
-        message: "Who is the employee's manager?", //refer to managersArray
+        message: "Who is the employee's manager? (Refer to them by their Manager ID)", //refer to managersArray
         choices: [],
         name: "manager",
     },
