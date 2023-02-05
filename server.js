@@ -42,15 +42,16 @@ function init() {
         .then((data) => {
             if (data.toDo == "View All Departments") {
                 querySet = 0;
-                querying(querySet);
+                viewQuery(querySet);
             } else if (data.toDo == "View All Roles") {
                 querySet = 1;
-                querying(querySet);
+                viewQuery(querySet);
             } else if (data.toDo == "View All Employees") {
                 querySet = 2;
-                querying(querySet);
-            } else if (data.toDo == "Add Role") {
-                inquirer.prompt(addRole);
+                viewQuery(querySet);
+            } else if (data.toDo == "Add Department") {
+                inquirer.prompt(addDepartment)
+                    .then((data) => { addQuery(data); });
             }
             // else if () { }
             // else if () { }
@@ -68,11 +69,22 @@ function init() {
 //TODO: create API Routes
 //Used to add new information (Add options)
 // app.post('./');
-
+function addQuery(data) {
+    const sql = `INSERT INTO department (name) VALUES (?)`;
+    const params = [data.name];
+    db.query(sql, params, (err, result) => {
+        if (err) {
+            throw error;
+        } else {
+            console.log(`Successfully added ${params} to department!`)
+        }
+        init();
+    });
+}
 
 //bonus add in querying for: api/budget-for department, api/employee-by-department, api/employee-by-manager
 //Used to read information (View options)
-function querying(querySet) {
+function viewQuery(querySet) {
     const sql = `SELECT ${parameters[querySet]} FROM ${url[querySet]}`;
     db.query(sql, (err, data) => {
         const table = cTable.getTable(data)
