@@ -68,33 +68,74 @@ function init() {
 
 //TODO: create API Routes
 //Used to add new information (Add options)
-// app.post('./');
-function addQuery(data) {
-    const sql = `INSERT INTO department (name) VALUES (?)`;
-    const params = [data.name];
+// function addQuery(data) {
+//     const sql = `INSERT INTO department (name) VALUES (?)`;
+//     const params = [data.name];
+//     db.query(sql, params, (err, result) => {
+//         if (err) {
+//             throw error;
+//         } else {
+//             console.log(`Successfully added ${params} to department!`)
+//         }
+//         init();
+//     });
+// }
+
+// //bonus add in querying for: api/budget-for department, api/employee-by-department, api/employee-by-manager
+// //Used to read information (View options)
+// function viewQuery(querySet) {
+//     const sql = `SELECT ${parameters[querySet]} FROM ${url[querySet]}`;
+//     db.query(sql, (err, data) => {
+//         const table = cTable.getTable(data)
+//         console.log(table);
+//         init();
+//     });
+// }
+
+//Used to update an employee's role (Something along the lines of : 1. select employee to change role, 2. select new role)
+// Tested with insomnia using the following:
+//http://localhost:3001/api/employee/3
+//JSON.body:
+// {
+// 	"role_id": 6
+// }
+//Succeeded
+app.put('/api/employee/:id', (req, res) => {
+    const sql = `UPDATE employee SET role_id = ? WHERE id = ?`;
+    const params = [req.body.role_id, req.params.id];
     db.query(sql, params, (err, result) => {
         if (err) {
-            throw error;
+            res.status(400).json({ error: err.message });
+        } else if (!result.affectedRows) {
+            res.json({
+                message: 'Employee not found'
+            });
         } else {
-            console.log(`Successfully added ${params} to department!`)
+            res.json({
+                message: 'success',
+                data: req.body,
+                changes: result.affectedRows
+            });
         }
-        init();
     });
-}
+});
 
-//bonus add in querying for: api/budget-for department, api/employee-by-department, api/employee-by-manager
-//Used to read information (View options)
-function viewQuery(querySet) {
-    const sql = `SELECT ${parameters[querySet]} FROM ${url[querySet]}`;
+app.get('/api/employee', (req, res) => {
+    const sql = `SELECT id as Employee_ID, first_name as First_Name, last_name as Last_Name, role_id as Role_ID, manager_id as Manager_ID FROM employee`;
+
     db.query(sql, (err, data) => {
+        if (err) {
+            res.status(500).json({ error: err.message });
+            return;
+        }
+        const dataObject = (res.json({
+            data: data
+        }));
         const table = cTable.getTable(data)
         console.log(table);
-        init();
     });
-}
+});
 
-//Used to update information (Update options)
-// app.put();
 
 // Default response for any other request (Not Found)
 app.use((req, res) => {

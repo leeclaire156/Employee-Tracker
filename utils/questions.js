@@ -66,7 +66,7 @@ const updateRole = [
         type: "list",
         message: "Which role do you want to assign the selected employee?", //refer to rolesArray
         choices: [],
-        name: "employeeUpdateRole",
+        name: "role_id",
     },
 ]
 
