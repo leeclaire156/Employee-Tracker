@@ -74,20 +74,20 @@ const addRole = [
     {
         type: "input",
         message: "What is the name of the role?",
-        name: "newRole",
+        name: "title",
         validate: nameValidation,
     },
     {
         type: "input",
         message: "What is the salary of the role?",
-        name: "roleSalary",
+        name: "salary",
         validate: salaryValidation,
     },
     {
         type: "list",
         message: "Which department does the role belong to?", //refer to departmentsArray
-        choices: [],
-        name: "roleDepartment",
+        choices: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+        name: "department_id",
     },
 ]
 

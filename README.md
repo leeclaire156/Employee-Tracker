@@ -135,9 +135,9 @@ Method 2:
 
 * `map()` vs `forEach()` supplemental lesson provided by [Brandon Morelli](https://medium.com/@bmorelli25):<br></br> https://codeburst.io/javascript-map-vs-foreach-f38111822c0f
 
-* []():<br></br> link
+* SQL INSERT INTO supplemental lesson provided by [W3 Schools](https://www.w3schools.com/default.asp):<br></br> https://www.w3schools.com/sql/sql_insert.asp
 
-* []():<br></br> link
+* SQL DELETE supplemental lesson provided by [W3 Schools](https://www.w3schools.com/default.asp):[]():<br></br> https://www.w3schools.com/sql/sql_delete.asp
 
 * []():<br></br> link
 

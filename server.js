@@ -39,20 +39,17 @@ const query = [
     ON company_db.department.id = role.department_id;`,
 
     `SELECT
-    employee.id as "Employee ID",
-    employee.first_name as "First Name",
-    employee.last_name as "Last Name",
-    role.title as Title,
-    department.name as Department,
-    role.salary as Salary,
-    concat(manager.first_name, " ", manager.last_name) as "Manager Name"
-FROM company_db.employee employee
-LEFT JOIN company_db.employee manager
-ON employee.manager_id = manager.id
-LEFT JOIN company_db.role 
-ON company_db.role.id = employee.role_id
-LEFT JOIN company_db.department
-ON company_db.department.id = role.department_id;`,
+        employee.id as "Employee ID",
+        employee.first_name as "First Name",
+        employee.last_name as "Last Name",
+        role.title as Title,
+        department.name as Department,
+        role.salary as Salary,
+        concat(manager.first_name, " ", manager.last_name) as "Manager Name"
+    FROM company_db.employee employee
+    LEFT JOIN company_db.employee manager ON employee.manager_id = manager.id
+    LEFT JOIN company_db.role ON company_db.role.id = employee.role_id
+    LEFT JOIN company_db.department ON company_db.department.id = role.department_id;`,
 ]
 
 function init() {
@@ -66,36 +63,52 @@ function init() {
                 viewQuery(query[2]);
             } else if (data.toDo == "Add Department") {
                 inquirer.prompt(addDepartment)
-                    .then((data) => { addQuery(data); });
-            } else if (data.toDo == "Update Employee Role") {
+                    .then((data) => {
+                        const sql = `INSERT INTO company_db.department (name) VALUES (?)`;
+                        const params = [data.name];
+                        addQuery(sql, params);
+                    });
+            }
+            else if (data.toDo == "Add Role") {
+                inquirer.prompt(addRole)
+                    .then((data) => {
+                        const sql = `INSERT INTO company_db.role (role.title, role.salary, role.department_id) VALUES (?, ?, ?)`;
+                        const params = [data.title, data.salary, data.department_id];
+                        addQuery(sql, params);
+                    });
+            }
+            else if (data.toDo == "Update Employee Role") {
                 returnEmployeeArray();
             }
-            // else if () { }
-            // else if () { }
-            // else if () { }
-            // else if () { }
-            // else if () { }
-            // else if () { }
+            // else if (data.toDo == "Update employee managers") { }
+            // else if (data.toDo == "View employees by manager") { }
+            // else if (data.toDo == "View employees by department") { }
+            // else if (data.toDo == "Delete departments") {
+            //     DELETE FROM company_db.department WHERE name = "Wow";
+            //  }
+            // else if (data.toDo == "Delete roles",) {
+            // DELETE FROM company_db.role WHERE title = "___";
+            //}
+            // else if (data.toDo == "Delete employees") { }
+            // else if (data.toDo == "View total utilized budget for a department") { }
+            // else {quit}
         })
 
 }
 
-
-
 //TODO: create API Routes
 //Used to add new information (Add options)
-// function addQuery(data) {
-//     const sql = `INSERT INTO department (name) VALUES (?)`;
-//     const params = [data.name];
-//     db.query(sql, params, (err, result) => {
-//         if (err) {
-//             throw error;
-//         } else {
-//             console.log(`Successfully added ${params} to department!`)
-//         }
-//         init();
-//     });
-// }
+function addQuery(sql, params) {
+    db.query(sql, params, (err, result) => {
+        if (err) {
+            console.error(err);
+            console.error(`Unsuccessful`);
+        } else {
+            console.log(`Successfully added ${params[0]}`)
+        }
+        init();
+    });
+}
 
 // //bonus add in querying for: api/budget-for department, api/employee-by-department, api/employee-by-manager
 // //Used to read information (View options)
