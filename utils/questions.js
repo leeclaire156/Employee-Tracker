@@ -32,26 +32,26 @@ const addEmployee = [
     {
         type: "input",
         message: "What is the employee's first name?",
-        name: "firstName",
+        name: "first_name",
         validate: nameValidation,
     },
     {
         type: "input",
         message: "What is the employee's last name?",
-        name: "lastName",
+        name: "last_name",
         validate: nameValidation,
     },
     {
         type: "list",
-        message: "What is the employee's role?", //refer to rolesArray
-        choices: [],
-        name: "role",
+        message: "What is the employee's role?", //refer to rolesArray, should be changed to role titles as options in the future
+        choices: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        name: "role_id",
     },
     {
         type: "list",
-        message: "Who is the employee's manager? (Refer to them by their Manager ID)", //refer to managersArray
-        choices: [],
-        name: "manager",
+        message: "Who is the employee's manager? (Refer to them by their Manager ID)", //refer to managersArray, should be changed to manager names as options in the future
+        choices: [1],
+        name: "manager_id",
     },
 ]
 
