@@ -3,7 +3,7 @@ const express = require('express');
 const mysql = require('mysql2');
 const cTable = require('console.table');
 const inquirer = require('inquirer');
-const { mainMenu, addEmployee, updateRole, addRole, addDepartment } = require('./utils/questions');
+const { mainMenu, addEmployee, updateRole, addRole, addDepartment, employeesArray, departmentsArray, managersArray, rolesArray } = require('./utils/questions');
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -30,30 +30,46 @@ db.connect(function (error) {
     init();
 })
 
+const query = [
+    `SELECT id as "Department ID", name as "Department Name" FROM company_db.department`,
 
-var querySet;
-const url = ["department", "role", "employee"];
-const parameters = ["id as Department_ID, name as Department_Name",
-    "id as Role_ID, title as Role, salary as Salary, department_id as Department_ID",
-    "id as Employee_ID, first_name as First_Name, last_name as Last_Name, role_id as Role_ID, manager_id as Manager_ID"]
+    `SELECT role.id as "Role ID", role.title as "Title", department.name as "Department", role.salary as "Salary"
+    FROM company_db.role 
+    JOIN company_db.department
+    ON company_db.department.id = role.department_id;`,
+
+    `SELECT
+    employee.id as "Employee ID",
+    employee.first_name as "First Name",
+    employee.last_name as "Last Name",
+    role.title as Title,
+    department.name as Department,
+    role.salary as Salary,
+    concat(manager.first_name, " ", manager.last_name) as "Manager Name"
+FROM company_db.employee employee
+LEFT JOIN company_db.employee manager
+ON employee.manager_id = manager.id
+LEFT JOIN company_db.role 
+ON company_db.role.id = employee.role_id
+LEFT JOIN company_db.department
+ON company_db.department.id = role.department_id;`,
+]
 
 function init() {
     inquirer.prompt(mainMenu)
         .then((data) => {
             if (data.toDo == "View All Departments") {
-                querySet = 0;
-                viewQuery(querySet);
+                viewQuery(query[0]);
             } else if (data.toDo == "View All Roles") {
-                querySet = 1;
-                viewQuery(querySet);
+                viewQuery(query[1]);
             } else if (data.toDo == "View All Employees") {
-                querySet = 2;
-                viewQuery(querySet);
+                viewQuery(query[2]);
             } else if (data.toDo == "Add Department") {
                 inquirer.prompt(addDepartment)
                     .then((data) => { addQuery(data); });
+            } else if (data.toDo == "Update Employee Role") {
+                returnEmployeeArray();
             }
-            // else if () { }
             // else if () { }
             // else if () { }
             // else if () { }
@@ -83,14 +99,14 @@ function init() {
 
 // //bonus add in querying for: api/budget-for department, api/employee-by-department, api/employee-by-manager
 // //Used to read information (View options)
-// function viewQuery(querySet) {
-//     const sql = `SELECT ${parameters[querySet]} FROM ${url[querySet]}`;
-//     db.query(sql, (err, data) => {
-//         const table = cTable.getTable(data)
-//         console.log(table);
-//         init();
-//     });
-// }
+function viewQuery(query) {
+    const sql = query;
+    db.query(sql, (err, data) => {
+        const table = cTable.getTable(data)
+        console.log(table);
+        init();
+    });
+}
 
 //Used to update an employee's role (Something along the lines of : 1. select employee to change role, 2. select new role)
 // Tested with insomnia using the following:
@@ -121,7 +137,21 @@ app.put('/api/employee/:id', (req, res) => {
 });
 
 app.get('/api/employee', (req, res) => {
-    const sql = `SELECT id as Employee_ID, first_name as First_Name, last_name as Last_Name, role_id as Role_ID, manager_id as Manager_ID FROM employee`;
+    const sql = `SELECT
+        employee.id as "Employee ID",
+        employee.first_name as "First Name",
+        employee.last_name as "Last Name",
+        role.title as Title, 
+        role.salary as Salary, 
+        department.name as Department, 
+        concat(manager.first_name, " ", manager.last_name) as "Manager_Name"
+    FROM company_db.employee employee
+    LEFT JOIN company_db.employee manager
+    ON employee.manager_id = manager.id
+    LEFT JOIN company_db.role 
+    ON company_db.role.id = employee.role_id
+    LEFT JOIN company_db.department
+    ON company_db.department.id = role.department_id;`;
 
     db.query(sql, (err, data) => {
         if (err) {

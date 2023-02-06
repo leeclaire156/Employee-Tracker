@@ -113,7 +113,7 @@ Method 2:
 
 * Code for inquirer validation as a separate function credit goes to [udalmik](https://stackoverflow.com/users/1584167/udalmik):<br></br> https://stackoverflow.com/questions/57321266/how-to-test-inquirer-validation
 
-* `string.length()` method supplemental lesson by [W3 Schools](https://www.w3schools.com/default.asp):<br></br> https://www.w3schools.com/jsref/jsref_length_string.asp
+* `string.length()` method supplemental lesson provided by [W3 Schools](https://www.w3schools.com/default.asp):<br></br> https://www.w3schools.com/jsref/jsref_length_string.asp
 
 * Linking within table credit goes to [Γιώργος Τερζής (or Giórgos Terzís)](https://stackoverflow.com/users/8697140/%ce%93%ce%b9%cf%8e%cf%81%ce%b3%ce%bf%cf%82-%ce%a4%ce%b5%cf%81%ce%b6%ce%ae%cf%82):<br></br> https://stackoverflow.com/questions/18680680/can-a-foreign-key-refer-to-a-primary-key-in-the-same-table
 
@@ -122,6 +122,18 @@ Method 2:
 * Information for MySQL2 dependency provided by [Node Package Manager](https://www.npmjs.com/):<br></br> https://www.npmjs.com/package/mysql2
 
 * Credit for querying function in server.js, responsible for invoking and connecting inquirer to SQL via query, belongs to "Adding to a table with Inquirer results" (3:51 minutes in) by [Lindsay Chapin](https://www.youtube.com/@lindsaychapin7392):<br></br> https://www.youtube.com/watch?v=gZugKSoAyoY&t=624s
+
+* SQL Joins supplemental lesson provided by [W3 Schools](https://www.w3schools.com/default.asp):<br></br> https://www.w3schools.com/sql/sql_join.asp
+
+* SQL Multiple Joins supplemental lesson provided by [SQL Shack](https://www.sqlshack.com/):<br></br> https://www.sqlshack.com/sql-multiple-joins-for-beginners-with-examples/
+
+* Credit for self joining code in `query` array in server.js goes to [Martyna Sławińska](https://learnsql.com/authors/martyna-slawinska/) in her article, "What Is a Self Join in SQL? An Explanation With Seven Examples":<br></br> https://learnsql.com/blog/what-is-self-join-sql/
+
+* SQL Server `CONCAT()` Function supplemental lesson provided by [W3 Schools](https://www.w3schools.com/default.asp):<br></br> https://www.w3schools.com/sql/func_sqlserver_concat.asp
+
+* Converting an Object to an Array in Javascript supplemental lesson provided by [JavaScript Tutorial](https://www.javascripttutorial.net/):<br></br> https://www.javascripttutorial.net/object/convert-an-object-to-an-array-in-javascript/
+
+* `map()` vs `forEach()` supplemental lesson provided by [Brandon Morelli](https://medium.com/@bmorelli25):<br></br> https://codeburst.io/javascript-map-vs-foreach-f38111822c0f
 
 * []():<br></br> link
 
