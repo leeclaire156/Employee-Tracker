@@ -76,6 +76,13 @@ function init() {
                         const params = [data.title, data.salary, data.department_id];
                         addQuery(sql, params);
                     });
+            } else if (data.toDo == "Add Employee") {
+                inquirer.prompt(addEmployee)
+                    .then((data) => {
+                        const sql = `INSERT INTO company_db.employee (employee.first_name, employee.last_name, employee.role_id, employee.manager_id) VALUES (?, ?, ?, ?)`;
+                        const params = [data.first_name, data.last_name, data.role_id, data.manager_id];
+                        addQuery(sql, params);
+                    });
             }
             else if (data.toDo == "Update Employee Role") {
                 returnEmployeeArray();
@@ -101,8 +108,8 @@ function init() {
 function addQuery(sql, params) {
     db.query(sql, params, (err, result) => {
         if (err) {
-            console.error(err);
             console.error(`Unsuccessful`);
+            console.error(err);
         } else {
             console.log(`Successfully added ${params[0]}`)
         }
@@ -179,6 +186,66 @@ app.get('/api/employee', (req, res) => {
     });
 });
 
+
+// function viewQuery(querySet) {
+//     const sql = `SELECT ${parameters[querySet]} FROM ${url[querySet]}`;
+//     db.query(sql, (err, data) => {
+//         const table = cTable.getTable(data)
+//         console.log(table);
+//         init();
+//     });
+// }
+
+
+// function returnEmployeeArray() {
+//     db.query(`SELECT id FROM employee`, (err, data) => {
+//         employeesArray = (Object.keys(data)).map(index => {
+//             return Number(index)
+//         });
+//         console.log(employeesArray + 'thats me!~!')
+//         console.log(typeof (employeesArray) + `is the Array type`);
+//         return employeesArray;
+//     });
+// };
+
+// app.get('/api/employee-by-id', (req, res) => {
+//     const sql = `SELECT id FROM employee`;
+
+//     db.query(sql, (err, data) => {
+//         if (err) {
+//             res.status(500).json({ error: err.message });
+//             return;
+//         }
+//         const dataObject = (res.json({
+//             data: data
+//         }));
+//         const employeeID = (Object.keys(data)).map(index => {
+//             return Number(index)
+//         });
+//         console.log(employeeID);
+//         console.log(typeof (employeeID));
+//         console.log(typeof (employeeID[1]));
+//         employeesArray = employeeID;
+//         console.log(employeesArray);
+//         return employeesArray = employeeID;
+//     });
+// });
+
+// app.get('/api/employee-by-id', (req, res) => {
+//     const sql = `SELECT id FROM employee`;
+
+//     db.query(sql, (err, data) => {
+//         if (err) {
+//             res.status(500).json({ error: err.message });
+//             return;
+//         }
+//         const dataObject = (res.json({
+//             data: data
+//         }));
+//         const table = cTable.getTable(data)
+//         console.log(table);
+//     });
+// });
 
 // Default response for any other request (Not Found)
 app.use((req, res) => {
