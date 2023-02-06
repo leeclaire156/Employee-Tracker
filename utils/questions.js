@@ -1,4 +1,5 @@
 const { nameValidation, salaryValidation } = require('./validation');
+// const { returnEmployeeArray } = require('../server')
 
 const mainMenu = {
     type: "list",
@@ -59,13 +60,13 @@ const updateRole = [
     {
         type: "list",
         message: "Which employee's role do you want to update?", //refer to employeesArray
-        choices: employeesArray,
-        name: "employeeUpdate",
+        choices: [1, 2, 3, 4, 5],
+        name: "employee_id",
     },
     {
         type: "list",
         message: "Which role do you want to assign the selected employee?", //refer to rolesArray
-        choices: [],
+        choices: [1, 2, 3, 4, 5, 6, 10, 12, 13, 14],
         name: "role_id",
     },
 ]
@@ -101,3 +102,4 @@ const addDepartment = [
 ]
 
 module.exports = { mainMenu, addEmployee, updateRole, addRole, addDepartment, employeesArray, departmentsArray, managersArray, rolesArray };
+// module.exports = { mainMenu, addEmployee, updateRole, addRole, addDepartment/*, employeesArray, departmentsArray, managersArray, rolesArray*/ };

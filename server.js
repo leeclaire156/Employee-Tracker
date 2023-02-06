@@ -68,8 +68,7 @@ function init() {
                         const params = [data.name];
                         addQuery(sql, params);
                     });
-            }
-            else if (data.toDo == "Add Role") {
+            } else if (data.toDo == "Add Role") {
                 inquirer.prompt(addRole)
                     .then((data) => {
                         const sql = `INSERT INTO company_db.role (role.title, role.salary, role.department_id) VALUES (?, ?, ?)`;
@@ -85,7 +84,11 @@ function init() {
                     });
             }
             else if (data.toDo == "Update Employee Role") {
-                returnEmployeeArray();
+                inquirer.prompt(updateRole)
+                    .then((data) => {
+                        const params = [data.role_id, data.employee_id]
+                        updateQuery(params)
+                    });
             }
             // else if (data.toDo == "Update employee managers") { }
             // else if (data.toDo == "View employees by manager") { }
@@ -129,6 +132,24 @@ function viewQuery(query) {
 }
 
 //Used to update an employee's role (Something along the lines of : 1. select employee to change role, 2. select new role)
+function updateQuery(params) {
+    const sql = `UPDATE employee SET role_id = ? WHERE id = ?`;
+    db.query(sql, params, (err, result) => {
+        if (err) {
+            console.error(err);
+        } else if (!result.affectedRows) {
+            console.log('Employee not found');
+        } else {
+            console.log(`successfully changed employee's role to ${params}`);
+        }
+    });
+}
+
+
+
+
+
+
 // Tested with insomnia using the following:
 //http://localhost:3001/api/employee/3
 //JSON.body:
@@ -187,6 +208,7 @@ app.get('/api/employee', (req, res) => {
 });
 
 
+// EXAMPLE, TO BE DELETED:
 // function viewQuery(querySet) {
 //     const sql = `SELECT ${parameters[querySet]} FROM ${url[querySet]}`;
 //     db.query(sql, (err, data) => {
@@ -197,39 +219,39 @@ app.get('/api/employee', (req, res) => {
 // }
 
 
-// function returnEmployeeArray() {
-//     db.query(`SELECT id FROM employee`, (err, data) => {
-//         employeesArray = (Object.keys(data)).map(index => {
-//             return Number(index)
-//         });
-//         console.log(employeesArray + 'thats me!~!')
-//         console.log(typeof (employeesArray) + `is the Array type`);
-//         return employeesArray;
-//     });
-// };
+function returnEmployeeArray() {
+    db.query(`SELECT id FROM employee`, (err, data) => {
+        employeesArray = (Object.keys(data)).map(index => {
+            return Number(index)
+        });
+        console.log(employeesArray + 'thats me!~!')
+        console.log(typeof (employeesArray) + `is the Array type`);
+        return employeesArray;
+    });
+};
 
-// app.get('/api/employee-by-id', (req, res) => {
-//     const sql = `SELECT id FROM employee`;
+app.get('/api/employee-by-id', (req, res) => {
+    const sql = `SELECT id FROM employee`;
 
-//     db.query(sql, (err, data) => {
-//         if (err) {
-//             res.status(500).json({ error: err.message });
-//             return;
-//         }
-//         const dataObject = (res.json({
-//             data: data
-//         }));
-//         const employeeID = (Object.keys(data)).map(index => {
-//             return Number(index)
-//         });
-//         console.log(employeeID);
-//         console.log(typeof (employeeID));
-//         console.log(typeof (employeeID[1]));
-//         employeesArray = employeeID;
-//         console.log(employeesArray);
-//         return employeesArray = employeeID;
-//     });
-// });
+    db.query(sql, (err, data) => {
+        if (err) {
+            res.status(500).json({ error: err.message });
+            return;
+        }
+        const dataObject = (res.json({
+            data: data
+        }));
+        const employeeID = (Object.keys(data)).map(index => {
+            return Number(index)
+        });
+        console.log(employeeID);
+        console.log(typeof (employeeID));
+        console.log(typeof (employeeID[1]));
+        employeesArray = employeeID;
+        console.log(employeesArray);
+        return employeesArray = employeeID;
+    });
+});
 
 // app.get('/api/employee-by-id', (req, res) => {
 //     const sql = `SELECT id FROM employee`;
