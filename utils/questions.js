@@ -23,10 +23,10 @@ const mainMenu = {
     name: "toDo",
 }
 
-const rolesArray = []
-const managersArray = []
-const employeesArray = []
-const departmentsArray = []
+var rolesArray;
+var managersArray;
+var employeesArray;
+var departmentsArray;
 
 const addEmployee = [
     {
@@ -59,7 +59,7 @@ const updateRole = [
     {
         type: "list",
         message: "Which employee's role do you want to update?", //refer to employeesArray
-        choices: [],
+        choices: employeesArray,
         name: "employeeUpdate",
     },
     {
@@ -100,4 +100,4 @@ const addDepartment = [
     },
 ]
 
-module.exports = { mainMenu, addEmployee, updateRole, addRole, addDepartment };
+module.exports = { mainMenu, addEmployee, updateRole, addRole, addDepartment, employeesArray, departmentsArray, managersArray, rolesArray };
