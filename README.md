@@ -141,11 +141,11 @@ Method 2:
 
 * SQL DELETE supplemental lesson provided by [W3 Schools](https://www.w3schools.com/default.asp):[]():<br></br> https://www.w3schools.com/sql/sql_delete.asp
 
-* []():<br></br> link
+* SQL Server `Concat with +` supplemental lesson provided by [W3 Schools](https://www.w3schools.com/default.asp):<br></br> https://www.w3schools.com/sql/func_sqlserver_concat_with_plus.asp
 
-* []():<br></br> link
+* []():<br></br> https://stackoverflow.com/questions/407048/accessing-variables-from-other-functions-without-using-global-variables
 
-* []():<br></br> link
+* []():<br></br> https://stackoverflow.com/questions/9588423/sql-server-inner-join-when-updating
 
 * []():<br></br> link
 

@@ -84,7 +84,7 @@ function init() {
                     });
             }
             else if (data.toDo == "Update Employee Role") {
-                updateRole();
+                returnEmployeeArray();
             }
             // else if (data.toDo == "Update employee managers") { }
             // else if (data.toDo == "View employees by manager") { }
@@ -127,73 +127,82 @@ function viewQuery(query) {
     });
 }
 
-//Used to update an employee's role (Something along the lines of : 1. select employee to change role, 2. select new role)
-// function updateQuery(params) {
-//     const sql = `UPDATE employee SET role_id = ? WHERE id = ?`;
-//     db.query(sql, params, (err, result) => {
-//         if (err) {
-//             console.error(err);
-//         } else if (!result.affectedRows) {
-//             console.log('Employee not found');
-//         } else {
-//             console.log(`successfully changed employee's role to ${params}`);
-//         }
-//     });
-// }
+// returnEmployeeArray(), returnRoleArray(), updateRoleQuestions() and updateRole() are used to update an employee's role
+const employeeArray = [];
+const roleArray = [];
 
-const updateRole = () => {
-    // run a SQL query for the current departments
-    let sqlProcedure = `SELECT company_db.employee.id FROM company_db.employee`;
-    db.promise().query(sqlProcedure)
-        .then(([rows]) => {
-            console.info(rows); // an object of just department names
-            const employeeIDArray = []; // created a blank array
-            // for loop to push array items into the blank array
-            for (let i = 0; i < rows.length; i++) {
-                employeeIDArray.push(rows[i].id) // my rows array had dept_name as the beginning part of each department
+// run a SQL query for the current departments
+function returnEmployeeArray() {
+    db.promise().query(`SELECT id, CONCAT(first_name, ' ', last_name) as full_name FROM company_db.employee`)
+        .then(([data]) => {
+            for (var i = 0; i < data.length; i++) {
+                employeeArray.push(data[i].full_name)
+
             }
-            console.log(employeeIDArray)
-
-            let sqlProcedure = `SELECT company_db.role.id FROM company_db.role`;
-            db.promise().query(sqlProcedure)
-                .then(([rows]) => {
-                    console.info(rows); // an object of just department names
-                    const roleIDArray = []; // created a blank array
-                    // for loop to push array items into the blank array
-                    for (let i = 0; i < rows.length; i++) {
-                        roleIDArray.push(rows[i].id) // my rows array had dept_name as the beginning part of each department
-                    }
-                    console.log(roleIDArray)
-                    
-                    inquirer.prompt([
-                        {
-                            type: 'list',
-                            name: 'updateEmployee',
-                            message: "Which employee's role do you want to update?",
-                            choices: employeeIDArray //shows each department from the const which was for looped above
-                        },
-                        {
-                            type: "list",
-                            message: "Which role do you want to assign the selected employee?", //refer to rolesArray
-                            choices: roleIDArray,
-                            name: "role_id",
-                        },
-                    ])
-                        .then((data) => {
-                            let sqlProcedure = `UPDATE employee SET role_id = ${data.role_id} WHERE id = ${data.updateEmployee}`;
-                            db.query(sqlProcedure, (err, result) => {
-                                if (err) {
-                                    console.error(err);
-                                } else if (!result.affectedRows) {
-                                    console.log('Employee not found');
-                                } else {
-                                    console.log(`successfully changed employee's role to ${data.role_id}`);
-                                }
-                            });
-                        })
-                })
+            returnRoleArray(employeeArray);
         })
 };
+
+function returnRoleArray() {
+    db.promise().query(`SELECT company_db.role.title FROM company_db.role`)
+        .then(([data]) => {
+            for (let i = 0; i < data.length; i++) {
+                roleArray.push(data[i].title) // my rows array had dept_name as the beginning part of each department
+            }
+            updateRoleQuestions(employeeArray, roleArray);
+        })
+};
+
+
+function updateRoleQuestions() {
+    inquirer.prompt([
+        {
+            type: 'list',
+            name: 'update_employee',
+            message: "Which employee's role do you want to update?",
+            choices: employeeArray //shows each department from the const which was for looped above
+        },
+        {
+            type: "list",
+            message: "Which role do you want to assign the selected employee?", //refer to rolesArray
+            choices: roleArray,
+            name: "new_role",
+        },
+    ]).then((data) => {
+        db.query(`SELECT * FROM company_db.role WHERE title = "${data.new_role}";`, (err, results) => {
+            if (err) {
+                console.error(err);
+            } else {
+                var jobInfo = results.pop()
+                var first_name = (data.update_employee).split(" ")[0]
+                var last_name = (data.update_employee).split(" ")[1]
+                var params = [jobInfo.id, first_name, last_name]
+                updateRole(params);
+            }
+        })
+    })
+
+}
+
+function updateRole(params) {
+    var sql =
+        `UPDATE company_db.employee
+            JOIN company_db.role
+            ON company_db.employee.role_id = company_db.role.id
+        SET role_id = ?
+        WHERE employee.first_name = ?
+            AND employee.last_name = ?`
+    db.query(sql, params, (err, result) => {
+        if (err) {
+            console.error(err);
+        } else if (!result.affectedRows) {
+            console.log('Employee not found');
+        } else {
+            console.log(`successfully changed employee's role`);
+        }
+        init()
+    })
+}
 
 
 
@@ -255,29 +264,6 @@ app.get('/api/employee', (req, res) => {
     });
 });
 
-
-// EXAMPLE, TO BE DELETED:
-// function viewQuery(querySet) {
-//     const sql = `SELECT ${parameters[querySet]} FROM ${url[querySet]}`;
-//     db.query(sql, (err, data) => {
-//         const table = cTable.getTable(data)
-//         console.log(table);
-//         init();
-//     });
-// }
-
-
-function returnEmployeeArray() {
-    db.query(`SELECT id FROM employee`, (err, data) => {
-        employeesArray = (Object.keys(data)).map(index => {
-            return Number(index)
-        });
-        console.log(employeesArray + 'thats me!~!')
-        console.log(typeof (employeesArray) + `is the Array type`);
-        return employeesArray;
-    });
-};
-
 app.get('/api/employee-by-id', (req, res) => {
     const sql = `SELECT id FROM employee`;
 
@@ -317,6 +303,9 @@ app.get('/api/employee-by-id', (req, res) => {
 //     });
 // });
 
+
+
+//KEEP BELOW
 // Default response for any other request (Not Found)
 app.use((req, res) => {
     res.status(404).end();
