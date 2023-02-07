@@ -97,7 +97,7 @@ function init() {
             //}
             // else if (data.toDo == "Delete employees") { }
             // else if (data.toDo == "View total utilized budget for a department") { }
-            // else {quit}
+            else { process.exit(); }
         })
 
 }
@@ -181,7 +181,6 @@ function updateRoleQuestions() {
             }
         })
     })
-
 }
 
 function updateRole(params) {
@@ -202,7 +201,7 @@ function updateRole(params) {
         }
         init()
     })
-}
+};
 
 
 
