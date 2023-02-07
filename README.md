@@ -111,6 +111,8 @@ Method 2:
 
 ## Credits
 
+* Sincerest thanks to [MaSandra Ewing, or mewing 0328](https://github.com/mewing0328) for sharing her code that is currently responsible for `updateRole` dynamically created a choice array based on the current SQL columns, which will be utilized for the following menu items in the future: `Add Role`, `Add Employee`.
+
 * Code for inquirer validation as a separate function credit goes to [udalmik](https://stackoverflow.com/users/1584167/udalmik):<br></br> https://stackoverflow.com/questions/57321266/how-to-test-inquirer-validation
 
 * `string.length()` method supplemental lesson provided by [W3 Schools](https://www.w3schools.com/default.asp):<br></br> https://www.w3schools.com/jsref/jsref_length_string.asp
@@ -138,8 +140,6 @@ Method 2:
 * SQL INSERT INTO supplemental lesson provided by [W3 Schools](https://www.w3schools.com/default.asp):<br></br> https://www.w3schools.com/sql/sql_insert.asp
 
 * SQL DELETE supplemental lesson provided by [W3 Schools](https://www.w3schools.com/default.asp):[]():<br></br> https://www.w3schools.com/sql/sql_delete.asp
-
-* []():<br></br> link
 
 * []():<br></br> link
 

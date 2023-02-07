@@ -3,7 +3,7 @@ const express = require('express');
 const mysql = require('mysql2');
 const cTable = require('console.table');
 const inquirer = require('inquirer');
-const { mainMenu, addEmployee, updateRole, addRole, addDepartment, employeesArray, departmentsArray, managersArray, rolesArray } = require('./utils/questions');
+const { mainMenu, addEmployee, addRole, addDepartment, employeesArray, departmentsArray, managersArray, rolesArray } = require('./utils/questions');
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -84,11 +84,7 @@ function init() {
                     });
             }
             else if (data.toDo == "Update Employee Role") {
-                inquirer.prompt(updateRole)
-                    .then((data) => {
-                        const params = [data.role_id, data.employee_id]
-                        updateQuery(params)
-                    });
+                updateRole();
             }
             // else if (data.toDo == "Update employee managers") { }
             // else if (data.toDo == "View employees by manager") { }
@@ -132,20 +128,72 @@ function viewQuery(query) {
 }
 
 //Used to update an employee's role (Something along the lines of : 1. select employee to change role, 2. select new role)
-function updateQuery(params) {
-    const sql = `UPDATE employee SET role_id = ? WHERE id = ?`;
-    db.query(sql, params, (err, result) => {
-        if (err) {
-            console.error(err);
-        } else if (!result.affectedRows) {
-            console.log('Employee not found');
-        } else {
-            console.log(`successfully changed employee's role to ${params}`);
-        }
-    });
-}
+// function updateQuery(params) {
+//     const sql = `UPDATE employee SET role_id = ? WHERE id = ?`;
+//     db.query(sql, params, (err, result) => {
+//         if (err) {
+//             console.error(err);
+//         } else if (!result.affectedRows) {
+//             console.log('Employee not found');
+//         } else {
+//             console.log(`successfully changed employee's role to ${params}`);
+//         }
+//     });
+// }
 
+const updateRole = () => {
+    // run a SQL query for the current departments
+    let sqlProcedure = `SELECT company_db.employee.id FROM company_db.employee`;
+    db.promise().query(sqlProcedure)
+        .then(([rows]) => {
+            console.info(rows); // an object of just department names
+            const employeeIDArray = []; // created a blank array
+            // for loop to push array items into the blank array
+            for (let i = 0; i < rows.length; i++) {
+                employeeIDArray.push(rows[i].id) // my rows array had dept_name as the beginning part of each department
+            }
+            console.log(employeeIDArray)
 
+            let sqlProcedure = `SELECT company_db.role.id FROM company_db.role`;
+            db.promise().query(sqlProcedure)
+                .then(([rows]) => {
+                    console.info(rows); // an object of just department names
+                    const roleIDArray = []; // created a blank array
+                    // for loop to push array items into the blank array
+                    for (let i = 0; i < rows.length; i++) {
+                        roleIDArray.push(rows[i].id) // my rows array had dept_name as the beginning part of each department
+                    }
+                    console.log(roleIDArray)
+                    
+                    inquirer.prompt([
+                        {
+                            type: 'list',
+                            name: 'updateEmployee',
+                            message: "Which employee's role do you want to update?",
+                            choices: employeeIDArray //shows each department from the const which was for looped above
+                        },
+                        {
+                            type: "list",
+                            message: "Which role do you want to assign the selected employee?", //refer to rolesArray
+                            choices: roleIDArray,
+                            name: "role_id",
+                        },
+                    ])
+                        .then((data) => {
+                            let sqlProcedure = `UPDATE employee SET role_id = ${data.role_id} WHERE id = ${data.updateEmployee}`;
+                            db.query(sqlProcedure, (err, result) => {
+                                if (err) {
+                                    console.error(err);
+                                } else if (!result.affectedRows) {
+                                    console.log('Employee not found');
+                                } else {
+                                    console.log(`successfully changed employee's role to ${data.role_id}`);
+                                }
+                            });
+                        })
+                })
+        })
+};
 
 
 
