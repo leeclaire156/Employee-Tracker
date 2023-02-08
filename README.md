@@ -143,11 +143,25 @@ Method 2:
 
 * SQL Server `Concat with +` supplemental lesson provided by [W3 Schools](https://www.w3schools.com/default.asp):<br></br> https://www.w3schools.com/sql/func_sqlserver_concat_with_plus.asp
 
-* []():<br></br> https://stackoverflow.com/questions/407048/accessing-variables-from-other-functions-without-using-global-variables
+* How to pass variables credit to [Paul Stephenson](https://stackoverflow.com/users/5536/paul-stephenson):<br></br> https://stackoverflow.com/questions/407048/accessing-variables-from-other-functions-without-using-global-variables
 
-* []():<br></br> https://stackoverflow.com/questions/9588423/sql-server-inner-join-when-updating
+* How to update on a joined SQL table provided credit to [LeeTee](https://stackoverflow.com/users/1001034/leetee):<br></br> https://stackoverflow.com/questions/9588423/sql-server-inner-join-when-updating
 
-* [](https://www.tutorialspoint.com/index.htm):<br></br> https://www.tutorialspoint.com/how-to-exit-a-process-in-node-js
+* How to exit a process information provided by [Mayank Agarwal](https://www.tutorialspoint.com/index.htm):<br></br> https://www.tutorialspoint.com/how-to-exit-a-process-in-node-js
+
+* SQL `NOT` keyword supplemental lesson provided by [W3 Schools](https://www.w3schools.com/default.asp):<br></br> https://www.w3schools.com/sql/sql_ref_not.asp
+
+* SQL `NOT` keyword supplemental lesson provided by [Tech on the Net](https://www.techonthenet.com/):<br></br> https://www.techonthenet.com/sql/not.php
+
+* []():<br></br> link
+
+* []():<br></br> link
+
+* []():<br></br> link
+
+* []():<br></br> link
+
+* []():<br></br> link
 
 * []():<br></br> link
 

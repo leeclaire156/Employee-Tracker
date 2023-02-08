@@ -292,7 +292,7 @@ function updateQuery(sql, params) {
 
 // "Update (an) Employee's Role" functions start here
 function returnEmployeeArray() {
-    db.promise().query(`SELECT id, CONCAT(first_name, ' ', last_name) as full_name FROM company_db.employee`)
+    db.promise().query(`SELECT CONCAT(first_name, ' ', last_name) as full_name FROM company_db.employee JOIN company_db.role ON company_db.employee.role_id = company_db.role.id WHERE NOT  company_db.role.title = "Manager";`)
         .then(([data]) => {
             for (var i = 0; i < data.length; i++) {
                 employeeArray.push(data[i].full_name)
