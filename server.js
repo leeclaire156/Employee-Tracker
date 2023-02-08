@@ -25,15 +25,26 @@ const db = mysql.createConnection(
     console.log(`Connected to the courses_db database.`)
 );
 
+// Default response for any other request (Not Found)
+app.use((req, res) => {
+    res.status(404).end();
+});
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
+
+
 db.connect(function (error) {
     if (error) throw error;
     init();
 })
 
-const managerArray = [];
-const departmentArray = [];
-const employeeArray = [];
-const roleArray = [];
+var choice;
+var managerArray = [];
+var departmentArray = [];
+var employeeArray = [];
+var roleArray = [];
 const query = [
     `SELECT id as "Department ID", name as "Department Name" FROM company_db.department`,
 
@@ -62,23 +73,22 @@ const mainMenu = {
     choices: [
         "View All Employees",
         "Add Employee",
-        "Update Employee Role", 
+        "Update Employee Role",
         "View All Roles",
         "Add Role",
         "View All Departments",
         "Add Department",
-        /*"Update employee managers",
-        "View employees by manager",
-        "View employees by department",
-        "Delete departments",
-        "Delete roles",
-        "Delete employees",
-        "View total utilized budget for a department",*/
+        // "Update employee managers",
+        // "View employees by manager",
+        // "View employees by department",
+        "Delete department",
+        // "Delete role",
+        // "Delete employee",
+        // "View total utilized budget for a department",
         "Quit"
     ],
     name: "toDo",
 }
-
 
 function init() {
     inquirer.prompt(mainMenu)
@@ -92,18 +102,22 @@ function init() {
             } else if (data.toDo == "Add Department") {
                 addDepartment();
             } else if (data.toDo == "Add Role") {
-                returnDepartmentArray();
+                choice = data.toDo
+                returnDepartmentArray(choice);
             } else if (data.toDo == "Add Employee") {
-                returnRoleArrayForNewEmployee();
+                choice = data.toDo
+                returnEmployeeArray(choice);
             } else if (data.toDo == "Update Employee Role") {
-                returnEmployeeArray();
+                choice = data.toDo
+                returnEmployeeArray(choice);
             }
             // else if (data.toDo == "Update employee managers") { }
             // else if (data.toDo == "View employees by manager") { }
             // else if (data.toDo == "View employees by department") { }
-            // else if (data.toDo == "Delete departments") {
-            //     DELETE FROM company_db.department WHERE name = "Wow";
-            //  }
+            else if (data.toDo == "Delete department") {
+                choice = data.toDo
+                returnDepartmentArray(choice);
+            }
             // else if (data.toDo == "Delete roles",) {
             // DELETE FROM company_db.role WHERE title = "___";
             //}
@@ -114,13 +128,47 @@ function init() {
 
 }
 
+// Used to delete information ("View Role/Employee/Department" options)
+function deleteQuery(sql, params) {
+    db.query(sql, params, (err, data) => {
+        if (err) {
+            console.error(`Unsuccessful`);
+            console.error(err);
+        } else {
+            console.log("Successfully deleted")
+            init();
+        }
+    });
+}
+
+// "Add Department" functions starts here
+function deleteDepartment() {
+    inquirer.prompt([
+        {
+            type: "list",
+            message: "What is the name of the department you want to delete?",
+            choices: departmentArray,
+            name: "name",
+        },
+    ]).then((data) => {
+        const sql = `DELETE FROM company_db.department WHERE name = ?`;
+        const params = [data.name];
+        deleteQuery(sql, params);
+    });
+}
+
 // Used to read information ("View Role/Employee/Department" options)
 function viewQuery(query) {
     const sql = query;
     db.query(sql, (err, data) => {
-        const table = cTable.getTable(data)
-        console.log(table);
-        init();
+        if (err) {
+            console.error(`Unsuccessful`);
+            console.error(err);
+        } else {
+            const table = cTable.getTable(data)
+            console.log(table);
+            init();
+        }
     });
 }
 
@@ -171,6 +219,7 @@ function returnManagerArray() {
                 WHERE role.title = "Manager";`
     db.promise().query(sql)
         .then(([data]) => {
+            managerArray = []; //Resets managerArray to empty
             for (let i = 0; i < data.length; i++) {
                 managerArray.push(data[i].manager_full_name)
             }
@@ -235,10 +284,17 @@ function reverseSearchRole(data, managerID) {
 function returnDepartmentArray() {
     db.promise().query(`SELECT company_db.department.name FROM company_db.department`)
         .then(([data]) => {
+            departmentArray = []; //Resets departmentArray to empty
             for (let i = 0; i < data.length; i++) {
                 departmentArray.push(data[i].name)
             }
-            addRoleQuestions(departmentArray);
+
+            if (choice == "Add Role") {
+                addRoleQuestions(departmentArray);
+            } else {
+                deleteDepartment(departmentArray);
+            }
+
         })
 };
 
@@ -294,6 +350,7 @@ function updateQuery(sql, params) {
 function returnEmployeeArray() {
     db.promise().query(`SELECT CONCAT(first_name, ' ', last_name) as full_name FROM company_db.employee JOIN company_db.role ON company_db.employee.role_id = company_db.role.id WHERE NOT  company_db.role.title = "Manager";`)
         .then(([data]) => {
+            employeeArray = []; //Resets employeeArray to empty
             for (var i = 0; i < data.length; i++) {
                 employeeArray.push(data[i].full_name)
             }
@@ -349,13 +406,3 @@ function updateRoleQuestions() {
     })
 }
 
-
-
-// Default response for any other request (Not Found)
-app.use((req, res) => {
-    res.status(404).end();
-});
-
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
