@@ -290,7 +290,7 @@ function addEmployeeQuestions() {
             name: "chosen_manager",
         },
     ]).then((data) => {
-        if (data.chosen_manager == "None") {
+        if (data.chosen_manager === "None") {
             var managerID = null;
             reverseSearchRole(data, managerID);
         } else {
@@ -309,7 +309,7 @@ function reverseSearchManager(data) {
             var sql = (query[2] + `\n WHERE employee.manager_id = ${managerID};`)
             viewQuery(sql);
         } else {
-            reverseSearchRole(data, params)
+            reverseSearchRole(data, managerID)
         }
     })
 }
