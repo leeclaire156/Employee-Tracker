@@ -51,7 +51,7 @@ const query = [
     `SELECT role.id as "Role ID", role.title as "Title", department.name as "Department", role.salary as "Salary"
     FROM company_db.role 
     JOIN company_db.department
-    ON company_db.department.id = role.department_id;`,
+    ON company_db.department.id = role.department_id`,
 
     `SELECT
         employee.id as "Employee ID",
@@ -64,7 +64,7 @@ const query = [
     FROM company_db.employee employee
     LEFT JOIN company_db.employee manager ON employee.manager_id = manager.id
     LEFT JOIN company_db.role ON company_db.role.id = employee.role_id
-    LEFT JOIN company_db.department ON company_db.department.id = role.department_id;`,
+    LEFT JOIN company_db.department ON company_db.department.id = role.department_id`,
 ]
 
 const mainMenu = {
@@ -79,7 +79,7 @@ const mainMenu = {
         "View All Departments",
         "Add Department",
         "Update Employee Managers",
-        // "View employees by manager",
+        "View Employees By Manager",
         // "View employees by department",
         "Delete department",
         // "Delete role",
@@ -113,8 +113,10 @@ function init() {
             } else if (data.toDo == "Update Employee Managers") {
                 choice = data.toDo
                 returnRoleArray(choice);
+            } else if (data.toDo == "View Employees By Manager") {
+                choice = data.toDo
+                returnManagerArray(choice)
             }
-            // else if (data.toDo == "View employees by manager") { }
             // else if (data.toDo == "View employees by department") { }
             else if (data.toDo == "Delete department") {
                 choice = data.toDo
@@ -222,7 +224,6 @@ function returnRoleArray() {
         })
 };
 
-
 function returnManagerArray() {
     var sql = `SELECT CONCAT(first_name, ' ', last_name) as manager_full_name FROM company_db.employee 
                 JOIN company_db.role
@@ -237,6 +238,15 @@ function returnManagerArray() {
                     managerArray.push(data[i].manager_full_name)
                 }
                 updateManagerQuestions(roleArray, managerArray);
+            })
+    } else if (choice == "View Employees By Manager") { //update manager route
+        db.promise().query(sql)
+            .then(([data]) => {
+                managerArray = []; //Resets managerArray to empty
+                for (let i = 0; i < data.length; i++) {
+                    managerArray.push(data[i].manager_full_name)
+                }
+                viewEmployeeByManagerQuestions(choice, managerArray);
             })
     } else { //Add employee route
         db.promise().query(sql)
@@ -292,7 +302,12 @@ function reverseSearchManager(data) {
     db.query(`SELECT * FROM company_db.employee WHERE employee.first_name = "${manager_first_name}" AND employee.last_name = "${manager_last_name}"`, (err, results) => {
         var managerInfo = results.pop();
         var managerID = managerInfo.id;
-        reverseSearchRole(data, managerID)
+        if (choice == "View Employees By Manager") {
+            var sql = (query[2] + `\n WHERE employee.manager_id = ${managerID};`)
+            viewQuery(sql);
+        } else {
+            reverseSearchRole(data, params)
+        }
     })
 }
 
@@ -463,3 +478,14 @@ function updateManagerQuestions() {
     })
 }
 
+// "View Employees By Manager" functions start here
+function viewEmployeeByManagerQuestions() {
+    inquirer.prompt([
+        {
+            type: 'list',
+            name: 'chosen_manager',
+            message: "Which manager's employees do you want to see?",
+            choices: managerArray
+        },
+    ]).then((data) => { reverseSearchManager(data, choice) })
+}
