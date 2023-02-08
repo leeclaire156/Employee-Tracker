@@ -3,7 +3,7 @@ const express = require('express');
 const mysql = require('mysql2');
 const cTable = require('console.table');
 const inquirer = require('inquirer');
-const { mainMenu, addEmployee, employeesArray, departmentsArray, managersArray, rolesArray } = require('./utils/questions');
+const { mainMenu, employeesArray, departmentsArray, managersArray, rolesArray } = require('./utils/questions');
 const { nameValidation, salaryValidation } = require('./utils/validation');
 
 const PORT = process.env.PORT || 3001;
@@ -31,6 +31,7 @@ db.connect(function (error) {
     init();
 })
 
+//TODO: fix naming conventions for clarity
 function init() {
     inquirer.prompt(mainMenu)
         .then((data) => {
@@ -45,12 +46,13 @@ function init() {
             } else if (data.toDo == "Add Role") {
                 returnDepartmentArray();
             } else if (data.toDo == "Add Employee") {
-                inquirer.prompt(addEmployee)
-                    .then((data) => {
-                        const sql = `INSERT INTO company_db.employee (employee.first_name, employee.last_name, employee.role_id, employee.manager_id) VALUES (?, ?, ?, ?)`;
-                        const params = [data.first_name, data.last_name, data.role_id, data.manager_id];
-                        addQuery(sql, params);
-                    });
+                // inquirer.prompt(addEmployee)
+                //     .then((data) => {
+                //         const sql = `INSERT INTO company_db.employee (employee.first_name, employee.last_name, employee.role_id, employee.manager_id) VALUES (?, ?, ?, ?)`;
+                //         const params = [data.first_name, data.last_name, data.role_id, data.manager_id];
+                //         addQuery(sql, params);
+                //     });
+                returnRoleArrayForNewEmployee();
             }
             else if (data.toDo == "Update Employee Role") {
                 returnEmployeeArray();
@@ -99,32 +101,83 @@ function addDepartment() {
     });
 }
 
-// const addEmployee = [
-//     {
-//         type: "input",
-//         message: "What is the employee's first name?",
-//         name: "first_name",
-//         validate: nameValidation,
-//     },
-//     {
-//         type: "input",
-//         message: "What is the employee's last name?",
-//         name: "last_name",
-//         validate: nameValidation,
-//     },
-//     {
-//         type: "list",
-//         message: "What is the employee's role?", //refer to rolesArray, should be changed to role titles as options in the future
-//         choices: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-//         name: "role_id",
-//     },
-//     {
-//         type: "list",
-//         message: "Who is the employee's manager? (Refer to them by their Manager ID)", //refer to managersArray, should be changed to manager names as options in the future
-//         choices: [1],
-//         name: "manager_id",
-//     },
-// ]
+function returnRoleArrayForNewEmployee() { //TODO Add department name for clarity
+    db.promise().query(`SELECT company_db.role.title FROM company_db.role`)
+        .then(([data]) => {
+            for (let i = 0; i < data.length; i++) {
+                roleArray.push(data[i].title) // my rows array had dept_name as the beginning part of each department
+            }
+            returnManagerArray(roleArray);
+        })
+};
+
+const managerArray = [];
+
+function returnManagerArray() {
+    var sql = `SELECT CONCAT(first_name, ' ', last_name) as manager_full_name FROM company_db.employee 
+                JOIN company_db.role
+                    ON company_db.employee.role_id = company_db.role.id
+                WHERE role.title = "Manager";`
+    db.promise().query(sql)//Returns Managers names for array in inquirer questions
+        .then(([data]) => {
+            for (let i = 0; i < data.length; i++) {
+                managerArray.push(data[i].manager_full_name) // my rows array had dept_name as the beginning part of each department
+            }
+            // console.log(managerArray) //returns sadia ahmed, chris lam, and brandon nguyen
+            askEmployeeQuestions(roleArray, managerArray);
+        })
+};
+
+function askEmployeeQuestions() {
+    inquirer.prompt([
+        {
+            type: "input",
+            message: "What is the employee's first name?",
+            name: "first_name",
+            validate: nameValidation,
+        },
+        {
+            type: "input",
+            message: "What is the employee's last name?",
+            name: "last_name",
+            validate: nameValidation,
+        },
+        {
+            type: "list",
+            message: "What is the employee's role?", //refer to rolesArray, should be changed to role titles as options in the future
+            choices: roleArray,
+            name: "chosen_role",
+        },
+        {
+            type: "list",
+            message: "Who is the employee's manager? (Refer to them by their Manager ID)", //refer to managersArray, should be changed to manager names as options in the future
+            choices: managerArray,
+            name: "chosen_manager",
+        },
+    ]).then((data) => {
+        reverseSearchManager(data);
+    })
+}
+
+function reverseSearchManager(data) {
+    var manager_first_name = (data.chosen_manager).split(" ")[0]
+    var manager_last_name = (data.chosen_manager).split(" ")[1]
+    db.query(`SELECT * FROM company_db.employee WHERE employee.first_name = "${manager_first_name}" AND employee.last_name = "${manager_last_name}"`, (err, results) => {
+        var managerInfo = results.pop();
+        var managerID = managerInfo.id;
+        reverseSearchRole(data, managerID)
+    })
+}
+
+function reverseSearchRole(data, managerID) {
+    db.query(`SELECT * FROM company_db.role WHERE role.title = "${data.chosen_role}"`, (err, results) => {
+        var roleInfo = results.pop();
+        var roleID = roleInfo.id;
+        var sql = `INSERT INTO company_db.employee (employee.first_name, employee.last_name, employee.role_id, employee.manager_id) VALUES (?, ?, ?, ?)`
+        var params = [data.first_name, data.last_name, roleID, managerID];
+        addQuery(sql, params)
+    })
+}
 
 
 var departmentArray = [];
@@ -168,23 +221,11 @@ function addRoleQuestions() {
                 console.log(results);
                 var departmentInfo = results.pop();
                 var sql = `INSERT INTO company_db.role (role.title, role.salary, role.department_id) VALUES (?, ?, ?)`
-                var params = [data.title, data.salary, departmentInfo.id]
+                var params = [data.title, data.salary, departmentInfo.id];
                 addQuery(sql, params);
             }
         })
     })
-}
-
-function addQuery(sql, params) {
-    db.query(sql, params, (err, result) => {
-        if (err) {
-            console.error(`Unsuccessful`);
-            console.error(err);
-        } else {
-            console.log(`Successfully added ${params[0]}`)
-        }
-        init();
-    });
 }
 
 const query = [ //DONT TOUCH ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -229,7 +270,6 @@ function returnEmployeeArray() {
         .then(([data]) => {
             for (var i = 0; i < data.length; i++) {
                 employeeArray.push(data[i].full_name)
-
             }
             returnRoleArray(employeeArray);
         })
@@ -257,7 +297,7 @@ function updateRoleQuestions() {
         },
         {
             type: "list",
-            message: "Which role do you want to assign the selected employee?", //refer to rolesArray
+            message: "Which role do you want to assign the selected employee?", //refer to rolesArray -- TODO: Add roletitle of department for clarity
             choices: roleArray,
             name: "new_role",
         },
@@ -277,7 +317,7 @@ function updateRoleQuestions() {
                     SET role_id = ?
                     WHERE employee.first_name = ?
                         AND employee.last_name = ?`
-                updateRole(sql, params);
+                updateQuery(sql, params);
             }
         })
     })
