@@ -106,7 +106,7 @@ function init() {
                 returnDepartmentArray(choice);
             } else if (data.toDo == "Add Employee") {
                 choice = data.toDo
-                returnEmployeeArray(choice);
+                returnRoleArray(choice);
             } else if (data.toDo == "Update Employee Role") {
                 choice = data.toDo
                 returnEmployeeArray(choice);
@@ -361,7 +361,7 @@ function returnRoleArray() {
             } else {
                 updateRoleQuestions(employeeArray, roleArray);
             }
-            
+
         })
 };
 
