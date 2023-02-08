@@ -41,7 +41,7 @@ db.connect(function (error) {
 })
 
 var choice;
-var managerArray = [];
+var managerArray = ["None",];
 var departmentArray = [];
 var employeeArray = [];
 var roleArray = [];
@@ -209,7 +209,7 @@ function returnManagerArray() {
                 WHERE role.title = "Manager";`
     db.promise().query(sql)
         .then(([data]) => {
-            managerArray = []; //Resets managerArray to empty
+            managerArray = ["None",]; //Resets managerArray to empty
             for (let i = 0; i < data.length; i++) {
                 managerArray.push(data[i].manager_full_name)
             }
@@ -244,7 +244,12 @@ function askEmployeeQuestions() {
             name: "chosen_manager",
         },
     ]).then((data) => {
-        reverseSearchManager(data);
+        if (data.chosen_manager == "None") {
+            var managerID = null;
+            reverseSearchRole(data, managerID);
+        } else {
+            reverseSearchManager(data);
+        }
     })
 }
 
