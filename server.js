@@ -202,16 +202,6 @@ function addDepartment() {
 }
 
 // "Add Employee" functions starts here
-function returnRoleArrayForNewEmployee() {
-    db.promise().query(`SELECT CONCAT(company_db.role.title, " of the ", company_db.department.name, " Department") AS full_role_title FROM company_db.role  LEFT JOIN company_db.department ON company_db.department.id = company_db.role.department_id`)
-        .then(([data]) => {
-            for (let i = 0; i < data.length; i++) {
-                roleArray.push(data[i].full_role_title)
-            }
-            returnManagerArray(roleArray);
-        })
-};
-
 function returnManagerArray() {
     var sql = `SELECT CONCAT(first_name, ' ', last_name) as manager_full_name FROM company_db.employee 
                 JOIN company_db.role
@@ -361,10 +351,17 @@ function returnEmployeeArray() {
 function returnRoleArray() {
     db.promise().query(`SELECT CONCAT(company_db.role.title, " of the ", company_db.department.name, " Department") AS full_role_title FROM company_db.role LEFT JOIN company_db.department ON company_db.department.id = company_db.role.department_id`)
         .then(([data]) => {
+            roleArray = []; //Resets roleArray to empty
             for (let i = 0; i < data.length; i++) {
                 roleArray.push(data[i].full_role_title)
             }
-            updateRoleQuestions(employeeArray, roleArray);
+
+            if (choice == "Add Employee") {
+                returnManagerArray(roleArray);
+            } else {
+                updateRoleQuestions(employeeArray, roleArray);
+            }
+            
         })
 };
 
