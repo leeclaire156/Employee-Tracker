@@ -245,12 +245,12 @@ function returnManagerArray() {
                 for (let i = 0; i < data.length; i++) {
                     managerArray.push(data[i].manager_full_name)
                 }
-                askEmployeeQuestions(roleArray, managerArray);
+                addEmployeeQuestions(roleArray, managerArray);
             })
     }
 };
 
-function askEmployeeQuestions() {
+function addEmployeeQuestions() {
     inquirer.prompt([
         {
             type: "input",
