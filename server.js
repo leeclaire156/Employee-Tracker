@@ -3,7 +3,6 @@ const express = require('express');
 const mysql = require('mysql2');
 const cTable = require('console.table');
 const inquirer = require('inquirer');
-const { mainMenu, employeesArray, departmentsArray, managersArray, rolesArray } = require('./utils/questions');
 const { nameValidation, salaryValidation } = require('./utils/validation');
 
 const PORT = process.env.PORT || 3001;
@@ -31,6 +30,29 @@ db.connect(function (error) {
     init();
 })
 
+const mainMenu = {
+    type: "list",
+    message: "What would you like to do?",
+    choices: [
+        "View All Employees", //Table with employees' id, first_name, last_name, job title (role), department,salary, and manager name should appear
+        "Add Employee", // Follow with "What is the employee's first name?", "What is the employee's last name?", "What is the employee's role?" (list; department and salary information for table should come from matching with role table), "Who is the employee's manager?" (Choice)
+        "Update Employee Role", // Follow with "Which employee's role do you want to update?" (Choice) and "Which role do you want to assign the selected employee?" (Choice) + confirmation message that says "Updated employee's role", maybe console info?
+        "View All Roles", // Table with roles' id, title, department, and salary should appear
+        "Add Role", // Follow with "What is the name of the role?", "What is the salary of the role?", and "Which department does the role belong to? (Choice)"
+        "View All Departments", // Table with departments' ids and names should appear
+        "Add Department", // "What is the name of the department?" + confirmation message that says "Added ${department name} to the database", maybe console info?
+        /*"Update employee managers",
+        "View employees by manager",
+        "View employees by department",
+        "Delete departments",
+        "Delete roles",
+        "Delete employees",
+        "View total utilized budget for a department",*/
+        "Quit"
+    ],
+    name: "toDo",
+}
+
 //TODO: fix naming conventions for clarity
 function init() {
     inquirer.prompt(mainMenu)
@@ -46,15 +68,8 @@ function init() {
             } else if (data.toDo == "Add Role") {
                 returnDepartmentArray();
             } else if (data.toDo == "Add Employee") {
-                // inquirer.prompt(addEmployee)
-                //     .then((data) => {
-                //         const sql = `INSERT INTO company_db.employee (employee.first_name, employee.last_name, employee.role_id, employee.manager_id) VALUES (?, ?, ?, ?)`;
-                //         const params = [data.first_name, data.last_name, data.role_id, data.manager_id];
-                //         addQuery(sql, params);
-                //     });
                 returnRoleArrayForNewEmployee();
-            }
-            else if (data.toDo == "Update Employee Role") {
+            } else if (data.toDo == "Update Employee Role") {
                 returnEmployeeArray();
             }
             // else if (data.toDo == "Update employee managers") { }
@@ -102,14 +117,15 @@ function addDepartment() {
 }
 
 function returnRoleArrayForNewEmployee() { //TODO Add department name for clarity
-    db.promise().query(`SELECT company_db.role.title FROM company_db.role`)
+    db.promise().query(`SELECT CONCAT(company_db.role.title, " of the ", company_db.department.name, " Department") AS full_role_title FROM company_db.role NATURAL JOIN company_db.department`)
         .then(([data]) => {
             for (let i = 0; i < data.length; i++) {
-                roleArray.push(data[i].title) // my rows array had dept_name as the beginning part of each department
+                roleArray.push(data[i].full_role_title)
             }
             returnManagerArray(roleArray);
         })
 };
+
 
 const managerArray = [];
 
@@ -118,12 +134,11 @@ function returnManagerArray() {
                 JOIN company_db.role
                     ON company_db.employee.role_id = company_db.role.id
                 WHERE role.title = "Manager";`
-    db.promise().query(sql)//Returns Managers names for array in inquirer questions
+    db.promise().query(sql)
         .then(([data]) => {
             for (let i = 0; i < data.length; i++) {
-                managerArray.push(data[i].manager_full_name) // my rows array had dept_name as the beginning part of each department
+                managerArray.push(data[i].manager_full_name)
             }
-            // console.log(managerArray) //returns sadia ahmed, chris lam, and brandon nguyen
             askEmployeeQuestions(roleArray, managerArray);
         })
 };
@@ -144,13 +159,13 @@ function askEmployeeQuestions() {
         },
         {
             type: "list",
-            message: "What is the employee's role?", //refer to rolesArray, should be changed to role titles as options in the future
+            message: "What is the employee's role?",
             choices: roleArray,
-            name: "chosen_role",
+            name: "new_employee_role",
         },
         {
             type: "list",
-            message: "Who is the employee's manager? (Refer to them by their Manager ID)", //refer to managersArray, should be changed to manager names as options in the future
+            message: "Who is the employee's manager? (Refer to them by their Manager ID)",
             choices: managerArray,
             name: "chosen_manager",
         },
@@ -170,7 +185,9 @@ function reverseSearchManager(data) {
 }
 
 function reverseSearchRole(data, managerID) {
-    db.query(`SELECT * FROM company_db.role WHERE role.title = "${data.chosen_role}"`, (err, results) => {
+    var chosen_role = data.new_employee_role.split(" of the ")[0]
+    var role_department = (data.new_employee_role.split(" of the ")[1]).split(" Department")[0]
+    db.query(`SELECT role.id, role.title FROM company_db.role JOIN company_db.department ON role.department_id = department.id WHERE role.title = "${chosen_role}" and name = "${role_department}"`, (err, results) => {
         var roleInfo = results.pop();
         var roleID = roleInfo.id;
         var sql = `INSERT INTO company_db.employee (employee.first_name, employee.last_name, employee.role_id, employee.manager_id) VALUES (?, ?, ?, ?)`
@@ -181,7 +198,6 @@ function reverseSearchRole(data, managerID) {
 
 
 var departmentArray = [];
-// run a SQL query for the current departments
 function returnDepartmentArray() {
     db.promise().query(`SELECT company_db.department.name FROM company_db.department`)
         .then(([data]) => {
@@ -228,7 +244,7 @@ function addRoleQuestions() {
     })
 }
 
-const query = [ //DONT TOUCH ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+const query = [
     `SELECT id as "Department ID", name as "Department Name" FROM company_db.department`,
 
     `SELECT role.id as "Role ID", role.title as "Title", department.name as "Department", role.salary as "Salary"
@@ -277,10 +293,10 @@ function returnEmployeeArray() {
 
 // run a SQL query for the current roles
 function returnRoleArray() {
-    db.promise().query(`SELECT company_db.role.title FROM company_db.role`)
+    db.promise().query(`SELECT CONCAT(company_db.role.title, " of the ", company_db.department.name, " Department") AS full_role_title FROM company_db.role NATURAL JOIN company_db.department`)
         .then(([data]) => {
             for (let i = 0; i < data.length; i++) {
-                roleArray.push(data[i].title) // my rows array had dept_name as the beginning part of each department
+                roleArray.push(data[i].full_role_title)
             }
             updateRoleQuestions(employeeArray, roleArray);
         })
@@ -293,16 +309,18 @@ function updateRoleQuestions() {
             type: 'list',
             name: 'update_employee',
             message: "Which employee's role do you want to update?",
-            choices: employeeArray //shows each department from the const which was for looped above
+            choices: employeeArray
         },
         {
             type: "list",
-            message: "Which role do you want to assign the selected employee?", //refer to rolesArray -- TODO: Add roletitle of department for clarity
+            message: "Which role do you want to assign the selected employee?",
             choices: roleArray,
             name: "new_role",
         },
     ]).then((data) => {
-        db.query(`SELECT * FROM company_db.role WHERE title = "${data.new_role}";`, (err, results) => {
+        var chosen_role = data.new_role.split(" of the ")[0]
+        var role_department = (data.new_role.split(" of the ")[1]).split(" Department")[0]
+        db.query(`SELECT role.id, role.title FROM company_db.role JOIN company_db.department ON role.department_id = department.id WHERE role.title = "${chosen_role}" and name = "${role_department}"`, (err, results) => {
             if (err) {
                 console.error(err);
             } else {
@@ -312,11 +330,11 @@ function updateRoleQuestions() {
                 var params = [jobInfo.id, first_name, last_name]
                 var sql =
                     `UPDATE company_db.employee
-                        JOIN company_db.role
-                        ON company_db.employee.role_id = company_db.role.id
-                    SET role_id = ?
-                    WHERE employee.first_name = ?
-                        AND employee.last_name = ?`
+                            JOIN company_db.role
+                            ON company_db.employee.role_id = company_db.role.id
+                        SET role_id = ?
+                        WHERE employee.first_name = ?
+                            AND employee.last_name = ?`
                 updateQuery(sql, params);
             }
         })
@@ -336,108 +354,6 @@ function updateQuery(sql, params) {
     })
 };
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// Tested with insomnia using the following:
-//http://localhost:3001/api/employee/3
-//JSON.body:
-// {
-// 	"role_id": 6
-// }
-//Succeeded
-app.put('/api/employee/:id', (req, res) => {
-    const sql = `UPDATE employee SET role_id = ? WHERE id = ?`;
-    const params = [req.body.role_id, req.params.id];
-    db.query(sql, params, (err, result) => {
-        if (err) {
-            res.status(400).json({ error: err.message });
-        } else if (!result.affectedRows) {
-            res.json({
-                message: 'Employee not found'
-            });
-        } else {
-            res.json({
-                message: 'success',
-                data: req.body,
-                changes: result.affectedRows
-            });
-        }
-    });
-});
-
-app.get('/api/employee', (req, res) => {
-    const sql = `SELECT
-        employee.id as "Employee ID",
-        employee.first_name as "First Name",
-        employee.last_name as "Last Name",
-        role.title as Title, 
-        role.salary as Salary, 
-        department.name as Department, 
-        concat(manager.first_name, " ", manager.last_name) as "Manager_Name"
-    FROM company_db.employee employee
-    LEFT JOIN company_db.employee manager
-    ON employee.manager_id = manager.id
-    LEFT JOIN company_db.role 
-    ON company_db.role.id = employee.role_id
-    LEFT JOIN company_db.department
-    ON company_db.department.id = role.department_id;`;
-
-    db.query(sql, (err, data) => {
-        if (err) {
-            res.status(500).json({ error: err.message });
-            return;
-        }
-        const dataObject = (res.json({
-            data: data
-        }));
-        const table = cTable.getTable(data)
-        console.log(table);
-    });
-});
-
-app.get('/api/employee-by-id', (req, res) => {
-    const sql = `SELECT id FROM employee`;
-
-    db.query(sql, (err, data) => {
-        if (err) {
-            res.status(500).json({ error: err.message });
-            return;
-        }
-        const dataObject = (res.json({
-            data: data
-        }));
-        const employeeID = (Object.keys(data)).map(index => {
-            return Number(index)
-        });
-        console.log(employeeID);
-        console.log(typeof (employeeID));
-        console.log(typeof (employeeID[1]));
-        employeesArray = employeeID;
-        console.log(employeesArray);
-        return employeesArray = employeeID;
-    });
-});
-
-// app.get('/api/employee-by-id', (req, res) => {
-//     const sql = `SELECT id FROM employee`;
-
-//     db.query(sql, (err, data) => {
-//         if (err) {
-//             res.status(500).json({ error: err.message });
-//             return;
-//         }
-//         const dataObject = (res.json({
-//             data: data
-//         }));
-//         const table = cTable.getTable(data)
-//         console.log(table);
-//     });
-// });
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-//KEEP BELOW
 // Default response for any other request (Not Found)
 app.use((req, res) => {
     res.status(404).end();
