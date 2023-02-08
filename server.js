@@ -82,7 +82,7 @@ const mainMenu = {
         "View Employees By Manager",
         "View Employees By Department",
         "Delete Department",
-        // "Delete Role",
+        "Delete Role",
         // "Delete Employee",
         "View Total Utilized Budget For A Department",
         "Quit"
@@ -122,11 +122,12 @@ function init() {
             } else if (data.toDo == "Delete Department") {
                 choice = data.toDo
                 returnDepartmentArray(choice);
+            } else if (data.toDo == "Delete Role") {
+                choice = data.toDo
+                returnRoleArray(choice)
+                // DELETE FROM company_db.role WHERE title = "___";
             }
-            // else if (data.toDo == "Delete roles",) {
-            // DELETE FROM company_db.role WHERE title = "___";
-            //}
-            // else if (data.toDo == "Delete employees") { }
+            // else if (data.toDo == "Delete Employee") { }
             else if (data.toDo == "View Total Utilized Budget For A Department") {
                 choice = data.toDo
                 returnDepartmentArray(choice);
@@ -148,7 +149,7 @@ function deleteQuery(sql, params) {
     });
 }
 
-// "Add Department" functions starts here
+// "Delete Department" functions starts here
 function deleteDepartment() {
     inquirer.prompt([
         {
@@ -161,6 +162,28 @@ function deleteDepartment() {
         const sql = `DELETE FROM company_db.department WHERE name = ?`;
         const params = [data.name];
         deleteQuery(sql, params);
+    });
+}
+
+// "Delete Role" functions starts here
+function deleteRole() {
+    inquirer.prompt([
+        {
+            type: "list",
+            message: "What is the name of the role you want to delete?",
+            choices: roleArray,
+            name: "role_to_delete",
+        },
+    ]).then((data) => {
+        var chosen_role = data.role_to_delete.split(" of the ")[0]
+        var role_department = (data.role_to_delete.split(" of the ")[1]).split(" Department")[0]
+        db.query(`SELECT role.id, role.title FROM company_db.role JOIN company_db.department ON role.department_id = department.id WHERE role.title = "${chosen_role}" AND name = "${role_department}"`, (err, results) => {
+            var roleInfo = results.pop();
+            var roleID = roleInfo.id;
+            var sql = `DELETE FROM company_db.role WHERE role.id = ?`
+            var params = [roleID];
+            deleteQuery(sql, params)
+        })
     });
 }
 
@@ -220,6 +243,8 @@ function returnRoleArray() {
 
             if (choice == "Update Employee Role") {
                 returnEmployeeArray(roleArray)
+            } else if (choice == "Delete Role") {
+                deleteRole(roleArray, choice)
             } else { // Should go through this path for both addEmployee and updateManagerRole
                 returnManagerArray(roleArray, choice);
             }
@@ -267,13 +292,13 @@ function addEmployeeQuestions() {
     inquirer.prompt([
         {
             type: "input",
-            message: "What is the employee's first name? (If you have two or more components to your first name, please add a hyphen to prevent errors)",
+            message: "What is the employee's first name? \n(If you have two or more components to your first name, please add a hyphen to prevent errors)\n",
             name: "first_name",
             validate: nameValidation,
         },
         {
             type: "input",
-            message: "What is the employee's last name? (If you have two or more components to your last name, please add a hyphen to prevent errors)",
+            message: "What is the employee's last name? \n(If you have two or more components to your last name, please add a hyphen to prevent errors)\n",
             name: "last_name",
             validate: nameValidation,
         },
