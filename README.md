@@ -111,7 +111,7 @@ Method 2:
 
 ## Credits
 
-* Sincerest thanks to [MaSandra Ewing, or mewing 0328](https://github.com/mewing0328) for sharing her code that is currently responsible for `updateRole` dynamically created a choice array based on the current SQL columns, which will be utilized for the following menu items in the future: `Add Role`, `Add Employee`.
+* Sincerest thanks to [MaSandra Ewing, or mewing 0328](https://github.com/mewing0328) for sharing her code that is currently responsible for `updateRole`. `Add Role`, and `Add Employee` dynamically created a choice array based on the current SQL columns, and for teaching me the SQL function `NATURAL JOIN`.
 
 * Code for inquirer validation as a separate function credit goes to [udalmik](https://stackoverflow.com/users/1584167/udalmik):<br></br> https://stackoverflow.com/questions/57321266/how-to-test-inquirer-validation
 
