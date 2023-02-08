@@ -60,13 +60,13 @@ const mainMenu = {
     type: "list",
     message: "What would you like to do?",
     choices: [
-        "View All Employees", //Table with employees' id, first_name, last_name, job title (role), department,salary, and manager name should appear
-        "Add Employee", // Follow with "What is the employee's first name?", "What is the employee's last name?", "What is the employee's role?" (list; department and salary information for table should come from matching with role table), "Who is the employee's manager?" (Choice)
-        "Update Employee Role", // Follow with "Which employee's role do you want to update?" (Choice) and "Which role do you want to assign the selected employee?" (Choice) + confirmation message that says "Updated employee's role", maybe console info?
-        "View All Roles", // Table with roles' id, title, department, and salary should appear
-        "Add Role", // Follow with "What is the name of the role?", "What is the salary of the role?", and "Which department does the role belong to? (Choice)"
-        "View All Departments", // Table with departments' ids and names should appear
-        "Add Department", // "What is the name of the department?" + confirmation message that says "Added ${department name} to the database", maybe console info?
+        "View All Employees",
+        "Add Employee",
+        "Update Employee Role", 
+        "View All Roles",
+        "Add Role",
+        "View All Departments",
+        "Add Department",
         /*"Update employee managers",
         "View employees by manager",
         "View employees by department",
@@ -222,7 +222,7 @@ function reverseSearchManager(data) {
 function reverseSearchRole(data, managerID) {
     var chosen_role = data.new_employee_role.split(" of the ")[0]
     var role_department = (data.new_employee_role.split(" of the ")[1]).split(" Department")[0]
-    db.query(`SELECT role.id, role.title FROM company_db.role JOIN company_db.department ON role.department_id = department.id WHERE role.title = "${chosen_role}" and name = "${role_department}"`, (err, results) => {
+    db.query(`SELECT role.id, role.title FROM company_db.role JOIN company_db.department ON role.department_id = department.id WHERE role.title = "${chosen_role}" AND name = "${role_department}"`, (err, results) => {
         var roleInfo = results.pop();
         var roleID = roleInfo.id;
         var sql = `INSERT INTO company_db.employee (employee.first_name, employee.last_name, employee.role_id, employee.manager_id) VALUES (?, ?, ?, ?)`
@@ -258,7 +258,7 @@ function addRoleQuestions() {
         },
         {
             type: "list",
-            message: "Which department does the role belong to?", //refer to departmentArray
+            message: "Which department does the role belong to?",
             choices: departmentArray,
             name: "department_id",
         },
@@ -284,7 +284,7 @@ function updateQuery(sql, params) {
         } else if (!result.affectedRows) {
             console.log('Employee not found');
         } else {
-            console.log(`successfully changed employee's role`);
+            console.log(`Successfully changed employee's role`);
         }
         init()
     })
