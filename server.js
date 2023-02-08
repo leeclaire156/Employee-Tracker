@@ -30,6 +30,32 @@ db.connect(function (error) {
     init();
 })
 
+const managerArray = [];
+const departmentArray = [];
+const employeeArray = [];
+const roleArray = [];
+const query = [
+    `SELECT id as "Department ID", name as "Department Name" FROM company_db.department`,
+
+    `SELECT role.id as "Role ID", role.title as "Title", department.name as "Department", role.salary as "Salary"
+    FROM company_db.role 
+    JOIN company_db.department
+    ON company_db.department.id = role.department_id;`,
+
+    `SELECT
+        employee.id as "Employee ID",
+        employee.first_name as "First Name",
+        employee.last_name as "Last Name",
+        role.title as Title,
+        department.name as Department,
+        role.salary as Salary,
+        concat(manager.first_name, " ", manager.last_name) as "Manager Name"
+    FROM company_db.employee employee
+    LEFT JOIN company_db.employee manager ON employee.manager_id = manager.id
+    LEFT JOIN company_db.role ON company_db.role.id = employee.role_id
+    LEFT JOIN company_db.department ON company_db.department.id = role.department_id;`,
+]
+
 const mainMenu = {
     type: "list",
     message: "What would you like to do?",
@@ -53,7 +79,7 @@ const mainMenu = {
     name: "toDo",
 }
 
-//TODO: fix naming conventions for clarity
+
 function init() {
     inquirer.prompt(mainMenu)
         .then((data) => {
@@ -88,7 +114,17 @@ function init() {
 
 }
 
-//Used to add new information (Add options)
+// Used to read information ("View Role/Employee/Department" options)
+function viewQuery(query) {
+    const sql = query;
+    db.query(sql, (err, data) => {
+        const table = cTable.getTable(data)
+        console.log(table);
+        init();
+    });
+}
+
+//Used to add new information ("Add role/employee/department" options)
 function addQuery(sql, params) {
     db.query(sql, params, (err, result) => {
         if (err) {
@@ -101,6 +137,7 @@ function addQuery(sql, params) {
     });
 }
 
+// "Add Department" functions starts here
 function addDepartment() {
     inquirer.prompt([
         {
@@ -116,8 +153,9 @@ function addDepartment() {
     });
 }
 
-function returnRoleArrayForNewEmployee() { //TODO Add department name for clarity
-    db.promise().query(`SELECT CONCAT(company_db.role.title, " of the ", company_db.department.name, " Department") AS full_role_title FROM company_db.role NATURAL JOIN company_db.department`)
+// "Add Employee" functions starts here
+function returnRoleArrayForNewEmployee() {
+    db.promise().query(`SELECT CONCAT(company_db.role.title, " of the ", company_db.department.name, " Department") AS full_role_title FROM company_db.role  LEFT JOIN company_db.department ON company_db.department.id = company_db.role.department_id`)
         .then(([data]) => {
             for (let i = 0; i < data.length; i++) {
                 roleArray.push(data[i].full_role_title)
@@ -125,9 +163,6 @@ function returnRoleArrayForNewEmployee() { //TODO Add department name for clarit
             returnManagerArray(roleArray);
         })
 };
-
-
-const managerArray = [];
 
 function returnManagerArray() {
     var sql = `SELECT CONCAT(first_name, ' ', last_name) as manager_full_name FROM company_db.employee 
@@ -196,8 +231,7 @@ function reverseSearchRole(data, managerID) {
     })
 }
 
-
-var departmentArray = [];
+// "Add Role" functions start here
 function returnDepartmentArray() {
     db.promise().query(`SELECT company_db.department.name FROM company_db.department`)
         .then(([data]) => {
@@ -207,7 +241,6 @@ function returnDepartmentArray() {
             addRoleQuestions(departmentArray);
         })
 };
-
 
 function addRoleQuestions() {
     inquirer.prompt([
@@ -234,7 +267,6 @@ function addRoleQuestions() {
             if (err) {
                 console.error(err);
             } else {
-                console.log(results);
                 var departmentInfo = results.pop();
                 var sql = `INSERT INTO company_db.role (role.title, role.salary, role.department_id) VALUES (?, ?, ?)`
                 var params = [data.title, data.salary, departmentInfo.id];
@@ -244,43 +276,21 @@ function addRoleQuestions() {
     })
 }
 
-const query = [
-    `SELECT id as "Department ID", name as "Department Name" FROM company_db.department`,
+// Used to update information ("Update Employee Role" option)
+function updateQuery(sql, params) {
+    db.query(sql, params, (err, result) => {
+        if (err) {
+            console.error(err);
+        } else if (!result.affectedRows) {
+            console.log('Employee not found');
+        } else {
+            console.log(`successfully changed employee's role`);
+        }
+        init()
+    })
+};
 
-    `SELECT role.id as "Role ID", role.title as "Title", department.name as "Department", role.salary as "Salary"
-    FROM company_db.role 
-    JOIN company_db.department
-    ON company_db.department.id = role.department_id;`,
-
-    `SELECT
-        employee.id as "Employee ID",
-        employee.first_name as "First Name",
-        employee.last_name as "Last Name",
-        role.title as Title,
-        department.name as Department,
-        role.salary as Salary,
-        concat(manager.first_name, " ", manager.last_name) as "Manager Name"
-    FROM company_db.employee employee
-    LEFT JOIN company_db.employee manager ON employee.manager_id = manager.id
-    LEFT JOIN company_db.role ON company_db.role.id = employee.role_id
-    LEFT JOIN company_db.department ON company_db.department.id = role.department_id;`,
-]
-
-// //Used to read information (View options) DONT TOUCH
-function viewQuery(query) {
-    const sql = query;
-    db.query(sql, (err, data) => {
-        const table = cTable.getTable(data)
-        console.log(table);
-        init();
-    });
-}
-
-// returnEmployeeArray(), returnRoleArray(), updateRoleQuestions() and updateRole() are used to update an employee's role
-const employeeArray = [];
-const roleArray = [];
-
-// run a SQL query for the current employees
+// "Update (an) Employee's Role" functions start here
 function returnEmployeeArray() {
     db.promise().query(`SELECT id, CONCAT(first_name, ' ', last_name) as full_name FROM company_db.employee`)
         .then(([data]) => {
@@ -291,9 +301,8 @@ function returnEmployeeArray() {
         })
 };
 
-// run a SQL query for the current roles
 function returnRoleArray() {
-    db.promise().query(`SELECT CONCAT(company_db.role.title, " of the ", company_db.department.name, " Department") AS full_role_title FROM company_db.role NATURAL JOIN company_db.department`)
+    db.promise().query(`SELECT CONCAT(company_db.role.title, " of the ", company_db.department.name, " Department") AS full_role_title FROM company_db.role LEFT JOIN company_db.department ON company_db.department.id = company_db.role.department_id`)
         .then(([data]) => {
             for (let i = 0; i < data.length; i++) {
                 roleArray.push(data[i].full_role_title)
@@ -301,7 +310,6 @@ function returnRoleArray() {
             updateRoleQuestions(employeeArray, roleArray);
         })
 };
-
 
 function updateRoleQuestions() {
     inquirer.prompt([
@@ -341,18 +349,7 @@ function updateRoleQuestions() {
     })
 }
 
-function updateQuery(sql, params) {
-    db.query(sql, params, (err, result) => {
-        if (err) {
-            console.error(err);
-        } else if (!result.affectedRows) {
-            console.log('Employee not found');
-        } else {
-            console.log(`successfully changed employee's role`);
-        }
-        init()
-    })
-};
+
 
 // Default response for any other request (Not Found)
 app.use((req, res) => {
