@@ -68,9 +68,13 @@ SELECT *
 INSERT INTO company_db.role (role.title, role.salary, role.department_id) 
     VALUES (?, ?, ?)
 
--- To view employees' by their full name. Table with manager's first and last name concatented should appear.
-SELECT id, CONCAT(first_name, ' ', last_name) as full_name 
-    FROM company_db.employee
+-- To view employees' by their full name. Table with employees' first and last name concatented should appear, no managers will appear here.
+SELECT CONCAT(first_name, ' ', last_name) as full_name 
+    FROM company_db.employee 
+    JOIN company_db.role 
+    ON company_db.employee.role_id = company_db.role.id 
+    WHERE NOT  company_db.role.title = "Manager";
+
 
 -- To update an employee's role using matching first and last name.
 UPDATE company_db.employee
