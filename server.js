@@ -78,7 +78,7 @@ const mainMenu = {
         "Add Role",
         "View All Departments",
         "Add Department",
-        // "Update employee managers",
+        "Update Employee Managers",
         // "View employees by manager",
         // "View employees by department",
         "Delete department",
@@ -109,9 +109,11 @@ function init() {
                 returnRoleArray(choice);
             } else if (data.toDo == "Update Employee Role") {
                 choice = data.toDo
-                returnEmployeeArray(choice);
+                returnRoleArray(choice);
+            } else if (data.toDo == "Update Employee Managers") {
+                choice = data.toDo
+                returnRoleArray(choice);
             }
-            // else if (data.toDo == "Update employee managers") { }
             // else if (data.toDo == "View employees by manager") { }
             // else if (data.toDo == "View employees by department") { }
             else if (data.toDo == "Delete department") {
@@ -202,19 +204,50 @@ function addDepartment() {
 }
 
 // "Add Employee" functions starts here
+
+function returnRoleArray() {
+    db.promise().query(`SELECT CONCAT(company_db.role.title, " of the ", company_db.department.name, " Department") AS full_role_title FROM company_db.role LEFT JOIN company_db.department ON company_db.department.id = company_db.role.department_id`)
+        .then(([data]) => {
+            roleArray = []; //Resets roleArray to empty
+            for (let i = 0; i < data.length; i++) {
+                roleArray.push(data[i].full_role_title)
+            }
+
+            if (choice == "Update Employee Role") {
+                returnEmployeeArray(roleArray)
+            } else { // Should go through this path for both addEmployee and updateManagerRole
+                returnManagerArray(roleArray, choice);
+            }
+
+        })
+};
+
+
 function returnManagerArray() {
     var sql = `SELECT CONCAT(first_name, ' ', last_name) as manager_full_name FROM company_db.employee 
                 JOIN company_db.role
                     ON company_db.employee.role_id = company_db.role.id
                 WHERE role.title = "Manager";`
-    db.promise().query(sql)
-        .then(([data]) => {
-            managerArray = ["None",]; //Resets managerArray to empty
-            for (let i = 0; i < data.length; i++) {
-                managerArray.push(data[i].manager_full_name)
-            }
-            askEmployeeQuestions(roleArray, managerArray);
-        })
+
+    if (choice == "Update Employee Managers") { //update manager route
+        db.promise().query(sql)
+            .then(([data]) => {
+                managerArray = []; //Resets managerArray to empty
+                for (let i = 0; i < data.length; i++) {
+                    managerArray.push(data[i].manager_full_name)
+                }
+                updateManagerQuestions(roleArray, managerArray);
+            })
+    } else { //Add employee route
+        db.promise().query(sql)
+            .then(([data]) => {
+                managerArray = ["None",]; //Resets managerArray to empty but with a no manager (null) option
+                for (let i = 0; i < data.length; i++) {
+                    managerArray.push(data[i].manager_full_name)
+                }
+                askEmployeeQuestions(roleArray, managerArray);
+            })
+    }
 };
 
 function askEmployeeQuestions() {
@@ -349,24 +382,7 @@ function returnEmployeeArray() {
             for (var i = 0; i < data.length; i++) {
                 employeeArray.push(data[i].full_name)
             }
-            returnRoleArray(employeeArray);
-        })
-};
-
-function returnRoleArray() {
-    db.promise().query(`SELECT CONCAT(company_db.role.title, " of the ", company_db.department.name, " Department") AS full_role_title FROM company_db.role LEFT JOIN company_db.department ON company_db.department.id = company_db.role.department_id`)
-        .then(([data]) => {
-            roleArray = []; //Resets roleArray to empty
-            for (let i = 0; i < data.length; i++) {
-                roleArray.push(data[i].full_role_title)
-            }
-
-            if (choice == "Add Employee") {
-                returnManagerArray(roleArray);
-            } else {
-                updateRoleQuestions(employeeArray, roleArray);
-            }
-
+            updateRoleQuestions(employeeArray, roleArray)
         })
 };
 
@@ -394,6 +410,45 @@ function updateRoleQuestions() {
                 var jobInfo = results.pop()
                 var first_name = (data.update_employee).split(" ")[0]
                 var last_name = (data.update_employee).split(" ")[1]
+                var params = [jobInfo.id, first_name, last_name]
+                var sql =
+                    `UPDATE company_db.employee
+                            JOIN company_db.role
+                            ON company_db.employee.role_id = company_db.role.id
+                        SET role_id = ?
+                        WHERE employee.first_name = ?
+                            AND employee.last_name = ?`
+                updateQuery(sql, params);
+            }
+        })
+    })
+}
+
+// "Update Employee Managers" functions start here
+function updateManagerQuestions() {
+    inquirer.prompt([
+        {
+            type: 'list',
+            name: 'update_manager',
+            message: "Which manager do you want to update?",
+            choices: managerArray
+        },
+        {
+            type: "list",
+            message: "Which role do you want to assign the selected manager?",
+            choices: roleArray,
+            name: "new_role",
+        },
+    ]).then((data) => {
+        var chosen_role = data.new_role.split(" of the ")[0]
+        var role_department = (data.new_role.split(" of the ")[1]).split(" Department")[0]
+        db.query(`SELECT role.id, role.title FROM company_db.role JOIN company_db.department ON role.department_id = department.id WHERE role.title = "${chosen_role}" and name = "${role_department}"`, (err, results) => {
+            if (err) {
+                console.error(err);
+            } else {
+                var jobInfo = results.pop()
+                var first_name = (data.update_manager).split(" ")[0]
+                var last_name = (data.update_manager).split(" ")[1]
                 var params = [jobInfo.id, first_name, last_name]
                 var sql =
                     `UPDATE company_db.employee
