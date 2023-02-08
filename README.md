@@ -139,7 +139,7 @@ Method 2:
 
 * SQL INSERT INTO supplemental lesson provided by [W3 Schools](https://www.w3schools.com/default.asp):<br></br> https://www.w3schools.com/sql/sql_insert.asp
 
-* SQL DELETE supplemental lesson provided by [W3 Schools](https://www.w3schools.com/default.asp):[]():<br></br> https://www.w3schools.com/sql/sql_delete.asp
+* SQL DELETE supplemental lesson provided by [W3 Schools](https://www.w3schools.com/default.asp):<br></br> https://www.w3schools.com/sql/sql_delete.asp
 
 * SQL Server `Concat with +` supplemental lesson provided by [W3 Schools](https://www.w3schools.com/default.asp):<br></br> https://www.w3schools.com/sql/func_sqlserver_concat_with_plus.asp
 
@@ -153,7 +153,7 @@ Method 2:
 
 * SQL `NOT` keyword supplemental lesson provided by [Tech on the Net](https://www.techonthenet.com/):<br></br> https://www.techonthenet.com/sql/not.php
 
-* []():<br></br> link
+* SQL `COUNT()`, `AVG()`, and `SUM()` functions supplemental lesson provided by [W3 Schools](https://www.w3schools.com/default.asp):<br></br> https://www.w3schools.com/sql/sql_count_avg_sum.asp
 
 * []():<br></br> link
 
