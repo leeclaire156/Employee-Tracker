@@ -80,8 +80,8 @@ const mainMenu = {
         "Add Department",
         "Update Employee Managers",
         "View Employees By Manager",
-        // "View employees by department",
-        "Delete department",
+        "View Employees By Department",
+        "Delete Department",
         // "Delete role",
         // "Delete employee",
         // "View total utilized budget for a department",
@@ -116,9 +116,10 @@ function init() {
             } else if (data.toDo == "View Employees By Manager") {
                 choice = data.toDo
                 returnManagerArray(choice)
-            }
-            // else if (data.toDo == "View employees by department") { }
-            else if (data.toDo == "Delete department") {
+            } else if (data.toDo == "View Employees By Department") {
+                choice = data.toDo
+                returnDepartmentArray(choice);
+            } else if (data.toDo == "Delete Department") {
                 choice = data.toDo
                 returnDepartmentArray(choice);
             }
@@ -334,6 +335,8 @@ function returnDepartmentArray() {
 
             if (choice == "Add Role") {
                 addRoleQuestions(departmentArray);
+            } else if (choice == "View Employees By Department") {
+                viewEmployeeByDepartmentQuestions(departmentArray)
             } else {
                 deleteDepartment(departmentArray);
             }
@@ -488,4 +491,19 @@ function viewEmployeeByManagerQuestions() {
             choices: managerArray
         },
     ]).then((data) => { reverseSearchManager(data, choice) })
+}
+
+// "View Employees By Department" functions start here
+function viewEmployeeByDepartmentQuestions() {
+    inquirer.prompt([
+        {
+            type: 'list',
+            name: 'chosen_department',
+            message: "Which department's employees do you want to see?",
+            choices: departmentArray
+        },
+    ]).then((data) => {
+        var sql = (query[2] + `\n WHERE department.name = "${data.chosen_department}"`)
+        viewQuery(sql);
+    })
 }
