@@ -3,7 +3,7 @@ const express = require('express');
 const mysql = require('mysql2');
 const cTable = require('console.table');
 const inquirer = require('inquirer');
-const { mainMenu, addEmployee, addRole, addDepartment, employeesArray, departmentsArray, managersArray, rolesArray } = require('./utils/questions');
+const { mainMenu, addEmployee, employeesArray, departmentsArray, managersArray, rolesArray } = require('./utils/questions');
 const { nameValidation, salaryValidation } = require('./utils/validation');
 
 const PORT = process.env.PORT || 3001;
@@ -41,19 +41,8 @@ function init() {
             } else if (data.toDo == "View All Employees") {
                 viewQuery(query[2]);
             } else if (data.toDo == "Add Department") {
-                inquirer.prompt(addDepartment)
-                    .then((data) => {
-                        const sql = `INSERT INTO company_db.department (name) VALUES (?)`;
-                        const params = [data.name];
-                        addQuery(sql, params);
-                    });
+                addDepartment();
             } else if (data.toDo == "Add Role") {
-                // inquirer.prompt(addRole)
-                //     .then((data) => {
-                // const sql = `INSERT INTO company_db.role (role.title, role.salary, role.department_id) VALUES (?, ?, ?)`;
-                // const params = [data.title, data.salary, data.department_id];
-                // addQuery(sql, params);     
-                // });
                 returnDepartmentArray();
             } else if (data.toDo == "Add Employee") {
                 inquirer.prompt(addEmployee)
@@ -95,15 +84,21 @@ function addQuery(sql, params) {
     });
 }
 
-// const addDepartment = [
-//     {
-//         type: "input",
-//         message: "What is the name of the department?",
-//         name: "name",
-//         validate: nameValidation,
-//     },
-// ]
-//
+function addDepartment() {
+    inquirer.prompt([
+        {
+            type: "input",
+            message: "What is the name of the department?",
+            name: "name",
+            validate: nameValidation,
+        },
+    ]).then((data) => {
+        const sql = `INSERT INTO company_db.department (name) VALUES (?)`;
+        const params = [data.name];
+        addQuery(sql, params);
+    });
+}
+
 // const addEmployee = [
 //     {
 //         type: "input",
