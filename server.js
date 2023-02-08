@@ -267,13 +267,13 @@ function addEmployeeQuestions() {
     inquirer.prompt([
         {
             type: "input",
-            message: "What is the employee's first name?",
+            message: "What is the employee's first name? (If you have two or more components to your first name, please add a hyphen to prevent errors)",
             name: "first_name",
             validate: nameValidation,
         },
         {
             type: "input",
-            message: "What is the employee's last name?",
+            message: "What is the employee's last name? (If you have two or more components to your last name, please add a hyphen to prevent errors)",
             name: "last_name",
             validate: nameValidation,
         },
@@ -337,12 +337,11 @@ function returnDepartmentArray() {
 
             if (choice == "Add Role") {
                 addRoleQuestions(departmentArray);
+            } else if (choice == "Delete Department") {
+                deleteDepartment(departmentArray);
             } else if (choice == "View Employees By Department" || "View Total Utilized Budget For A Department") {
                 choseDepartmentQuestion(departmentArray, choice)
-            } else {
-                deleteDepartment(departmentArray);
             }
-
         })
 };
 
