@@ -82,9 +82,9 @@ const mainMenu = {
         "View Employees By Manager",
         "View Employees By Department",
         "Delete Department",
-        // "Delete role",
-        // "Delete employee",
-        // "View total utilized budget for a department",
+        // "Delete Role",
+        // "Delete Employee",
+        "View Total Utilized Budget For A Department",
         "Quit"
     ],
     name: "toDo",
@@ -127,8 +127,10 @@ function init() {
             // DELETE FROM company_db.role WHERE title = "___";
             //}
             // else if (data.toDo == "Delete employees") { }
-            // else if (data.toDo == "View total utilized budget for a department") { }
-            else { process.exit(); }
+            else if (data.toDo == "View Total Utilized Budget For A Department") {
+                choice = data.toDo
+                returnDepartmentArray(choice);
+            } else { process.exit(); }
         })
 
 }
@@ -171,7 +173,7 @@ function viewQuery(query) {
             console.error(err);
         } else {
             const table = cTable.getTable(data)
-            console.log(table);
+            console.log("\n" + table);
             init();
         }
     });
@@ -335,8 +337,8 @@ function returnDepartmentArray() {
 
             if (choice == "Add Role") {
                 addRoleQuestions(departmentArray);
-            } else if (choice == "View Employees By Department") {
-                viewEmployeeByDepartmentQuestions(departmentArray)
+            } else if (choice == "View Employees By Department" || "View Total Utilized Budget For A Department") {
+                choseDepartmentQuestion(departmentArray, choice)
             } else {
                 deleteDepartment(departmentArray);
             }
@@ -354,7 +356,7 @@ function addRoleQuestions() {
         },
         {
             type: "input",
-            message: "What is the salary of the role?",
+            message: "What is the salary of the role (in USD)?",
             name: "salary",
             validate: salaryValidation,
         },
@@ -494,7 +496,7 @@ function viewEmployeeByManagerQuestions() {
 }
 
 // "View Employees By Department" functions start here
-function viewEmployeeByDepartmentQuestions() {
+function choseDepartmentQuestion() {
     inquirer.prompt([
         {
             type: 'list',
@@ -503,7 +505,14 @@ function viewEmployeeByDepartmentQuestions() {
             choices: departmentArray
         },
     ]).then((data) => {
-        var sql = (query[2] + `\n WHERE department.name = "${data.chosen_department}"`)
-        viewQuery(sql);
+        if (choice == "View Employees By Department") {
+            var sql = (query[2] + `\n WHERE department.name = "${data.chosen_department}"`)
+            viewQuery(sql);
+        } else {
+            var splitQuery2 = (query[2].split(`"Manager Name"`))
+            var sql = `SELECT SUM(company_db.role.salary) AS "${data.chosen_department}'s Total Utilized Budget (in USD)"` + splitQuery2[1] + `\n WHERE department.name = "${data.chosen_department}"`
+            viewQuery(sql);
+        }
     })
 }
+
