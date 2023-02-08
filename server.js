@@ -267,13 +267,13 @@ function addEmployeeQuestions() {
     inquirer.prompt([
         {
             type: "input",
-            message: "What is the employee's first name?",
+            message: "What is the employee's first name? (If you have two or more components to your first name, please add a hyphen to prevent errors)",
             name: "first_name",
             validate: nameValidation,
         },
         {
             type: "input",
-            message: "What is the employee's last name?",
+            message: "What is the employee's last name? (If you have two or more components to your last name, please add a hyphen to prevent errors)",
             name: "last_name",
             validate: nameValidation,
         },
@@ -290,7 +290,7 @@ function addEmployeeQuestions() {
             name: "chosen_manager",
         },
     ]).then((data) => {
-        if (data.chosen_manager == "None") {
+        if (data.chosen_manager === "None") {
             var managerID = null;
             reverseSearchRole(data, managerID);
         } else {
@@ -309,7 +309,7 @@ function reverseSearchManager(data) {
             var sql = (query[2] + `\n WHERE employee.manager_id = ${managerID};`)
             viewQuery(sql);
         } else {
-            reverseSearchRole(data, params)
+            reverseSearchRole(data, managerID)
         }
     })
 }
@@ -337,12 +337,11 @@ function returnDepartmentArray() {
 
             if (choice == "Add Role") {
                 addRoleQuestions(departmentArray);
+            } else if (choice == "Delete Department") {
+                deleteDepartment(departmentArray);
             } else if (choice == "View Employees By Department" || "View Total Utilized Budget For A Department") {
                 choseDepartmentQuestion(departmentArray, choice)
-            } else {
-                deleteDepartment(departmentArray);
             }
-
         })
 };
 
