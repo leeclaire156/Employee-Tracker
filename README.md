@@ -3,21 +3,23 @@
 
 ## Description
 
-This project is a command-line application that functions as a content management system (CMS), able to manage a company's employee database. The main menu will allow the user to view all departments, view all roles, view all employees, add a department, add a role, add an employee, and update an employee's role.
-<!-- BONUS: Update employee managers. View employees by manager. View employees by department. Delete departments, roles, and employees. View the total utilized budget of a department—in other words, the combined salaries of all employees in that department.-->
+This project is a command-line application that functions as a content management system (CMS), able to manage a company's employee database. The main menu will allow the user to view all departments, view all roles, view all employees, add a department, add a role, add an employee, update an employee's role, update employee manager's role, view employees by manager, view employees by department, delete departments, delete roles, delete employees, and finally, view the total utilized budget of a department, in other words, the combined salaries of all employees in that department.
 
-This project utilizes [Node.js version 16.18.0](https://nodejs.org/en/) and the [Inquirer version 8.2.4](https://www.npmjs.com/package/inquirer) package from [npm, Inc.](https://www.npmjs.com/) to create a main menu for content management while utilizing the [Node MySQL 2 version 3.1.0](https://www.npmjs.com/package/mysql2) package from [npm, Inc.](https://www.npmjs.com/) to access the database for displaying and editing employee records.
+
+This project utilizes [Node.js version 16.18.0](https://nodejs.org/en/) and the [Inquirer version 8.2.4](https://www.npmjs.com/package/inquirer) package from [npm, Inc.](https://www.npmjs.com/) to create a main menu for content management while utilizing the [Node MySQL 2 version 3.1.0](https://www.npmjs.com/package/mysql2) package from [npm, Inc.](https://www.npmjs.com/) to access the database for displaying and editing employee records. The development of this project also utilized [Insomnia version 2022.7.5](https://insomnia.rest/) to test SQL querying functions through testing routes and [MySQL WorkBench version 8.0.32](https://dev.mysql.com/doc/workbench/en/) to visualize the contents of the databases, test queries, as well as the changes that occurred.
 
 
 ## Table of Contents
 - [Installation](#installation)
-    - [Git/Git Bash](#gitgit-bash---strongly-recommended)
+    - [Git/GitBash](#gitgitbash---strongly-recommended)
     - [Visual Studio Code](#visual-studio-code-vsc---strongly-recommended)
-    - [Node](#node-version-16---required-to-download-node-based-dependencies-ie-inquirer-my-sql-2-express-and-consoletable)
-    - [Inquirer](#inquirer-version-824---required-to-prompt-questions)
-    - [Node My SQL 2](#node-my-sql-2-version-310---required-for-accessing-database)
-    - [express](#express-version-4182---required-for-connecting-and-creating-routes-to-database)
-    - [console.table](#consoletable-version-0100---required-for-printing-mysql-rows-into-console-log)
+    - [Node (REQUIRED)](#node-version-16---required-to-download-node-based-dependencies-ie-inquirer-my-sql-2-express-and-consoletable)
+    - [Inquirer (REQUIRED)](#inquirer-version-824---required-to-prompt-questions)
+    - [Node My SQL 2 (REQUIRED)](#node-my-sql-2-version-310---required-for-accessing-database)
+    - [console.table (REQUIRED)](#consoletable-version-0100---required-for-printing-mysql-rows-into-console-log)
+    - [express](#express-version-4182---strongly-recommended-as-a-devdependency-for-connecting-and-creating-routes-to-database-to-test-queries)
+    - [Insomnia](#insomnia-version-202275---strongly-recommended-as-a-develop-tool-for-testing-connections-and-express-based-routes-to-database)
+    - [MySQL Server/Workbench](#mysql-serverworkbench-version-8032---strongly-recommended-to-use-workbench-as-a-develop-tool-for-visualizing-database-while-testing-queries)
 - [Usage](#usage---for-the-purposes-of-this-demonstration-git-bash-will-be-used-as-my-preferred-terminal)
 - [Credits](#credits)
 - [Questions](#questions)
@@ -32,7 +34,7 @@ Make sure the following are downloaded:
 
 ### `Visual Studio Code [VSC]` - *Strongly Recommended*
 
-* If you'd like to make changes to this code or the README file generated, Visual Studio Code is recommended and can be downloaded for free [here](https://code.visualstudio.com/download).
+* If you'd like to make changes to these files, Visual Studio Code is recommended and can be downloaded for free [here](https://code.visualstudio.com/download).
 
 ### `Node version 16` - **REQUIRED** to download node-based dependencies (i.e. Inquirer, My SQL 2, express, and console.table)
 * Go to [Node's homepage, https://nodejs.org/en/](https://nodejs.org/en/), then [Downloads](https://nodejs.org/en/download/) and scroll down to the [Previous Releases](https://nodejs.org/en/download/releases/) bullet point. 
@@ -76,15 +78,27 @@ Make sure the following are downloaded:
 
 * Follow the same methods from [Inquirer v8.2.4 Installation Section](#inquirer-version-824---required-to-prompt-questions) to reach this repository if you've already exited out of the command-line, then type in `npm i mysql2` and hit `Enter`.
 
-### `express version 4.18.2` - **REQUIRED** for connecting and creating routes to database
-
-* Follow the same methods from [Inquirer v8.2.4 Installation Section](#inquirer-version-824---required-to-prompt-questions) to reach this repository if you've already exited out of the command-line, then type in `npm i express` and hit `Enter`.
-
 ### `console.table version 0.10.0` - **REQUIRED** for printing MySQL rows into console log
 
 * Follow the same methods from [Inquirer v8.2.4 Installation Section](#inquirer-version-824---required-to-prompt-questions) to reach this repository if you've already exited out of the command-line, then type in `npm i console.table` and hit `Enter`.
 
+### `express version 4.18.2` - *Strongly Recommended* as a devDependency for connecting and creating routes to database to test queries
+
+* Follow the same methods from [Inquirer v8.2.4 Installation Section](#inquirer-version-824---required-to-prompt-questions) to reach this repository if you've already exited out of the command-line, then type in `npm i express` and hit `Enter`.
+
 ![User installs inquirer, MySQL 2, express, and console.table using command line](./assets/screenshots/npm-i-consoletable.PNG)
+
+### `Insomnia version 2022.7.5` - *Strongly Recommended* as a develop tool for testing connections and express-based routes to database
+
+* Go to [Insomnia's homepage, https://insomnia.rest/](https://insomnia.rest/), then [Pricing](https://insomnia.rest/pricing) and click on the [Download Now](https://insomnia.rest/download)  button from the free tier.
+
+* You **do not** need an account to use this application.  
+
+### `MySQL Server/WorkBench version 8.0.32` - *Strongly Recommended* to use Workbench as a develop tool for visualizing database while testing queries
+
+* Follow the Full-Stack Blog's [MySQL Installation Guide](https://coding-boot-camp.github.io/full-stack/mysql/mysql-installation-guide) to download **both** the MySQL Server and the MySQL Workbench for development purposes.
+
+* It is recommended that you make your password 'password' for learning purposes and **ONLY** for MySQL *learning* purposes. **Do not use this for professional usage of MySQL.**
 
 
 ## Usage - for the purposes of this demonstration, Git Bash will be used as my preferred terminal
@@ -102,7 +116,7 @@ Method 2:
 
 ![User uses Change Directory (cd) to access repository through external terminal](./assets/screenshots/External-Terminal-Method-2.PNG)
 
-* Once this repository has been reached, type in `node server.js` into the terminal and hit `Enter`. This will start the questions prompt. Answer the questions as according to the project in question.
+* Once this repository has been reached, type in `node index.js` or `node index` into the terminal and hit `Enter`. This will start the questions prompt. Answer the questions as according to the project in question.
 ![Initializing the app with 'node index.js' in the external terminal](./assets/screenshots/External-Terminal-Initializing.PNG)
 
 * The first question will ...
@@ -154,20 +168,6 @@ Method 2:
 * SQL `NOT` keyword supplemental lesson provided by [Tech on the Net](https://www.techonthenet.com/):<br></br> https://www.techonthenet.com/sql/not.php
 
 * SQL `COUNT()`, `AVG()`, and `SUM()` functions supplemental lesson provided by [W3 Schools](https://www.w3schools.com/default.asp):<br></br> https://www.w3schools.com/sql/sql_count_avg_sum.asp
-
-* []():<br></br> link
-
-* []():<br></br> link
-
-* []():<br></br> link
-
-* []():<br></br> link
-
-* []():<br></br> link
-
-* []():<br></br> link
-
-* []():<br></br> link
 
 
 ## Questions
