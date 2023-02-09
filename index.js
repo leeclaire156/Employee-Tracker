@@ -126,6 +126,7 @@ function deleteQuery(sql, params) {
         if (err) {
             console.error(`\nUnsuccessful. Check if the item is linked to another table. \n \nEx: If you're trying to delete a department that has a set of roles associated with it, you must delete the roles first.\n`);
             console.error(err);
+            init();
         } else {
             console.log("Successfully deleted")
             init();
