@@ -7,11 +7,11 @@ const nameValidation = async (answer) => {
     var hasSpaceBefore = /^ /;
     var hasSpaceAfter = / $/;
     if (hasNumber.test(answer)) {
-        return "Please change the input to letters only" //TODO: dynamically change text based on what question is asking
+        return "Please change the input to letters only"
     } else if (hasProperCase.test(answer)) {
-        return "Remember to capitalize the beginning of your input"//TODO: dynamically change text based on what question is asking
+        return "Remember to capitalize the beginning of your input"
     } else if (!answer) {
-        return "Please enter the input"//TODO: dynamically change text based on what question is asking
+        return "Please enter the input"
     } else if (hasSpaceBefore.test(answer) || hasSpaceAfter.test(answer)) {
         return "Enter at least a character that isn't a space, or remove the space that is preceding and/or proceeding the input"
     } else if (answer.length > 30) {

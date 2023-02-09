@@ -53,20 +53,20 @@ const mainMenu = {
     type: "list",
     message: "What would you like to do?",
     choices: [
-        "View All Employees",
-        "Add Employee",
-        "Update Employee Role",
-        "View All Roles",
-        "Add Role",
         "View All Departments",
-        "Add Department",
-        "Update Employee Managers",
+        "View All Roles",
+        "View All Employees",
         "View Employees By Manager",
         "View Employees By Department",
+        "View Total Utilized Budget For A Department",
+        "Add Department",
+        "Add Role",
+        "Add Employee",
+        "Update Employee Role",
+        "Update Employee Managers",
         "Delete Department",
         "Delete Role",
         "Delete Employee",
-        "View Total Utilized Budget For A Department",
         "Quit"
     ],
     name: "toDo",
@@ -526,7 +526,7 @@ function viewEmployeeByManagerQuestions() {
     ]).then((data) => { reverseSearchManager(data, choice) })
 }
 
-// "View Employees By Department" functions start here
+// "View Employees By Department" and "View Total Utilize Budget" functions start here
 function choseDepartmentQuestion() {
     inquirer.prompt([
         {
