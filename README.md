@@ -110,7 +110,7 @@ Method 2 - File > Preferences > Setting:
 
 ## Usage - for the purposes of this demonstration, Git Bash will be used as my preferred terminal
 
-* A video of this application's usage can be viewed [here](#blank). If the link is non-functional, a copy of the video can be found in the "assets" folder.
+* A video of this application's usage can be viewed [here](https://drive.google.com/file/d/1N7DE3uk6BgSCyI6HEmMhzYurrts2tkeV/view). If the link is non-functional, a copy of the video can be found in the "assets" folder.
 
 * To use this application, start by using either of the two methods described in the [Inquirer v8.2.4 Installation Section](#inquirer-version-824---required-to-prompt-questions) to reach this repository through the preferred terminal.
 
@@ -143,10 +143,11 @@ Method 2:
 "Delete Employee",
 "Quit"
 ```
+* **WARNING:** To delete a department or role, make sure it is not assigned to anything else first. Before deleting a role, all employees with that role should be updated to another role. Before deleting a department, all roles in that department should be deleted first.
+
 ![Main menu from "View All Departments" to "Add Department"](./assets/screenshots/Main-Menu-1.PNG)
 ![Main menu from "Add Department" to "Delete Role"](./assets/screenshots/Main-Menu-2.PNG)
 ![Main menu from "Delete Department" and looped back to "View All Roles"](./assets/screenshots/Main-Menu-3.PNG)
-
 
 ## Credits
 
