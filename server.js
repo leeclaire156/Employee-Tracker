@@ -83,7 +83,7 @@ const mainMenu = {
         "View Employees By Department",
         "Delete Department",
         "Delete Role",
-        // "Delete Employee",
+        "Delete Employee",
         "View Total Utilized Budget For A Department",
         "Quit"
     ],
@@ -125,13 +125,15 @@ function init() {
             } else if (data.toDo == "Delete Role") {
                 choice = data.toDo
                 returnRoleArray(choice)
-                // DELETE FROM company_db.role WHERE title = "___";
-            }
-            // else if (data.toDo == "Delete Employee") { }
-            else if (data.toDo == "View Total Utilized Budget For A Department") {
+            } else if (data.toDo == "Delete Employee") {
+                choice = data.toDo
+                returnEmployeeArray(choice)
+            } else if (data.toDo == "View Total Utilized Budget For A Department") {
                 choice = data.toDo
                 returnDepartmentArray(choice);
-            } else { process.exit(); }
+            } else {
+                process.exit();
+            }
         })
 
 }
@@ -140,7 +142,7 @@ function init() {
 function deleteQuery(sql, params) {
     db.query(sql, params, (err, data) => {
         if (err) {
-            console.error(`Unsuccessful`);
+            console.error(`\nUnsuccessful. Check if the item is linked to another table. \n \nEx: If you're trying to delete a department that has a set of roles associated with it, you must delete the roles first.\n`);
             console.error(err);
         } else {
             console.log("Successfully deleted")
@@ -184,6 +186,24 @@ function deleteRole() {
             var params = [roleID];
             deleteQuery(sql, params)
         })
+    });
+}
+
+// "Delete Employee" functions starts here
+function deleteEmployee() {
+    inquirer.prompt([
+        {
+            type: "list",
+            message: "Which employee do you want to delete?",
+            choices: employeeArray,
+            name: "employee_to_delete",
+        },
+    ]).then((data) => {
+        var first_name = (data.employee_to_delete).split(" ")[0]
+        var last_name = (data.employee_to_delete).split(" ")[1]
+        var sql = `DELETE FROM company_db.employee WHERE employee.first_name = ? AND employee.last_name = ?`
+        var params = [first_name, last_name];
+        deleteQuery(sql, params)
     });
 }
 
@@ -232,7 +252,6 @@ function addDepartment() {
 }
 
 // "Add Employee" functions starts here
-
 function returnRoleArray() {
     db.promise().query(`SELECT CONCAT(company_db.role.title, " of the ", company_db.department.name, " Department") AS full_role_title FROM company_db.role LEFT JOIN company_db.department ON company_db.department.id = company_db.role.department_id`)
         .then(([data]) => {
@@ -242,7 +261,7 @@ function returnRoleArray() {
             }
 
             if (choice == "Update Employee Role") {
-                returnEmployeeArray(roleArray)
+                returnEmployeeArray(roleArray, choice)
             } else if (choice == "Delete Role") {
                 deleteRole(roleArray, choice)
             } else { // Should go through this path for both addEmployee and updateManagerRole
@@ -426,7 +445,13 @@ function returnEmployeeArray() {
             for (var i = 0; i < data.length; i++) {
                 employeeArray.push(data[i].full_name)
             }
-            updateRoleQuestions(employeeArray, roleArray)
+
+            if (choice == "Delete Employee") {
+                console.log("I am deleting an employee")
+                deleteEmployee(employeeArray)
+            } else {
+                updateRoleQuestions(employeeArray, roleArray)
+            }
         })
 };
 
