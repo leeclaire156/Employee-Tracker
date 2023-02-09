@@ -14,7 +14,7 @@ const db = mysql.createConnection(
         password: '^^@*M0n13$',
         database: 'company_db'
     },
-    console.log(`Connected to the courses_db database.`)
+    console.log(`Welcome to the Employee Tracker.`)
 );
 
 db.connect(function (error) {
