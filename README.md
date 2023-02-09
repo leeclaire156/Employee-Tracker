@@ -19,7 +19,7 @@ This project utilizes [Node.js version 16.18.0](https://nodejs.org/en/) and the 
     - [console.table (REQUIRED)](#consoletable-version-0100---required-for-printing-mysql-rows-into-console-log)
     - [express](#express-version-4182---recommended-as-a-devdependency-for-connecting-and-creating-routes-to-database-to-test-queries)
     - [Insomnia](#insomnia-version-202275---recommended-as-a-develop-tool-for-testing-connections-and-express-based-routes-to-database)
-    - [MySQL Server/Workbench](#mysql-serverworkbench-version-8032---strongly-recommended-to-use-workbench-as-a-develop-tool-for-visualizing-database-while-testing-queries)
+    - [MySQL Server/Workbench](#mysql-serverworkbench-version-8032---recommended-to-use-workbench-as-a-develop-tool-for-visualizing-database-while-testing-queries)
 - [Usage](#usage---for-the-purposes-of-this-demonstration-git-bash-will-be-used-as-my-preferred-terminal)
 - [Credits](#credits)
 - [Questions](#questions)
