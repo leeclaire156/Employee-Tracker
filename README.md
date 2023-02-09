@@ -17,8 +17,8 @@ This project utilizes [Node.js version 16.18.0](https://nodejs.org/en/) and the 
     - [Inquirer (REQUIRED)](#inquirer-version-824---required-to-prompt-questions)
     - [Node My SQL 2 (REQUIRED)](#node-my-sql-2-version-310---required-for-accessing-database)
     - [console.table (REQUIRED)](#consoletable-version-0100---required-for-printing-mysql-rows-into-console-log)
-    - [express](#express-version-4182---strongly-recommended-as-a-devdependency-for-connecting-and-creating-routes-to-database-to-test-queries)
-    - [Insomnia](#insomnia-version-202275---strongly-recommended-as-a-develop-tool-for-testing-connections-and-express-based-routes-to-database)
+    - [express](#express-version-4182---recommended-as-a-devdependency-for-connecting-and-creating-routes-to-database-to-test-queries)
+    - [Insomnia](#insomnia-version-202275---recommended-as-a-develop-tool-for-testing-connections-and-express-based-routes-to-database)
     - [MySQL Server/Workbench](#mysql-serverworkbench-version-8032---strongly-recommended-to-use-workbench-as-a-develop-tool-for-visualizing-database-while-testing-queries)
 - [Usage](#usage---for-the-purposes-of-this-demonstration-git-bash-will-be-used-as-my-preferred-terminal)
 - [Credits](#credits)
@@ -47,7 +47,13 @@ Make sure the following are downloaded:
 
 * This **MUST** be installed into this repository, start by opening the command line interface.
 
-* If you have Visual Code Studio, add the README Generator repository to the workspace. Then, go to 'Settings' either through the cog icon in the lower left corner and clicking Settings, go to File -> Preferences -> Settings in the menu bar, or the key combo of Ctrl+,
+* If you have Visual Code Studio, add this repository to the workspace. Then, go to 'Settings' either through the cog icon in the lower left corner and clicking Settings, go to File -> Preferences -> Settings in the menu bar, or the key combo of Ctrl+,
+
+Method 1 - Cog:
+![Finding settings through the "settings cog" icon in the lower left corner](./assets/screenshots/Finding-Settings-1.PNG)
+
+Method 2 - File > Preferences > Setting:
+![Finding settings through File > Preferences > Settings in the navbar of Visual Studio Code](./assets/screenshots/Finding-Settings-2.PNG)
 
 * Then, change the settings in "Terminal: Explorer Kind" to "external" in the drop down menu.
 
@@ -55,7 +61,7 @@ Make sure the following are downloaded:
         
 * Change the filepath of the "Terminal > External: [respective operating system]" settings to the preferred command line interface program (either your system's Command Prompts's file path or Git/Git Bash's file path)
 
-![Changing "Terminal > External" Settings](./assets/screenshots/External-Terminal-Settings-1.PNG)
+![Changing "Terminal > External" Settings](./assets/screenshots/External-Terminal-Settings-2.PNG)
 
 * After that, right-click the repository and select "Open in External Terminal"
 
@@ -82,19 +88,20 @@ Make sure the following are downloaded:
 
 * Follow the same methods from [Inquirer v8.2.4 Installation Section](#inquirer-version-824---required-to-prompt-questions) to reach this repository if you've already exited out of the command-line, then type in `npm i console.table` and hit `Enter`.
 
-### `express version 4.18.2` - *Strongly Recommended* as a devDependency for connecting and creating routes to database to test queries
+### `express version 4.18.2` - *Recommended* as a devDependency for connecting and creating routes to database to test queries
 
 * Follow the same methods from [Inquirer v8.2.4 Installation Section](#inquirer-version-824---required-to-prompt-questions) to reach this repository if you've already exited out of the command-line, then type in `npm i express` and hit `Enter`.
 
-![User installs inquirer, MySQL 2, express, and console.table using command line](./assets/screenshots/npm-i-consoletable.PNG)
+![User before they install inquirer, MySQL 2, express, and console.table using command line](./assets/screenshots/Before-Dependencies.PNG)
+![User after they install inquirer, MySQL 2, express, and console.table using command line](./assets/screenshots/After-Dependencies.PNG)
 
-### `Insomnia version 2022.7.5` - *Strongly Recommended* as a develop tool for testing connections and express-based routes to database
+### `Insomnia version 2022.7.5` - *Recommended* as a develop tool for testing connections and express-based routes to database
 
 * Go to [Insomnia's homepage, https://insomnia.rest/](https://insomnia.rest/), then [Pricing](https://insomnia.rest/pricing) and click on the [Download Now](https://insomnia.rest/download)  button from the free tier.
 
 * You **do not** need an account to use this application.  
 
-### `MySQL Server/WorkBench version 8.0.32` - *Strongly Recommended* to use Workbench as a develop tool for visualizing database while testing queries
+### `MySQL Server/WorkBench version 8.0.32` - *Recommended* to use Workbench as a develop tool for visualizing database while testing queries
 
 * Follow the Full-Stack Blog's [MySQL Installation Guide](https://coding-boot-camp.github.io/full-stack/mysql/mysql-installation-guide) to download **both** the MySQL Server and the MySQL Workbench for development purposes.
 
@@ -116,11 +123,29 @@ Method 2:
 
 ![User uses Change Directory (cd) to access repository through external terminal](./assets/screenshots/External-Terminal-Method-2.PNG)
 
-* Once this repository has been reached, type in `node index.js` or `node index` into the terminal and hit `Enter`. This will start the questions prompt. Answer the questions as according to the project in question.
-![Initializing the app with 'node index.js' in the external terminal](./assets/screenshots/External-Terminal-Initializing.PNG)
+* Once this repository has been reached, type in `node index.js` or `node index` into the terminal and hit `Enter`.
 
-* The first question will ...
-![First question asked through the terminal is "What is the name of your file?"](./)
+* The main menu will appear with the following options:
+```
+"View All Departments",
+"View All Roles",
+"View All Employees",
+"View Employees By Manager",
+"View Employees By Department",
+"View Total Utilized Budget For A Department",
+"Add Department",
+"Add Role",
+"Add Employee",
+"Update Employee Role",
+"Update Employee Managers",
+"Delete Department",
+"Delete Role",
+"Delete Employee",
+"Quit"
+```
+![Main menu from "View All Departments" to "Add Department"](./assets/screenshots/Main-Menu-1.PNG)
+![Main menu from "Add Department" to "Delete Role"](./assets/screenshots/Main-Menu-2.PNG)
+![Main menu from "Delete Department" and looped back to "View All Roles"](./assets/screenshots/Main-Menu-3.PNG)
 
 
 ## Credits
